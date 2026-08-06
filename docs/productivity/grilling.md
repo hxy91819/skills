@@ -22,7 +22,7 @@ Typing `/grilling` directly gets you the plain interview and nothing else. Where
 
 Three ideas carry the whole skill.
 
-The **design tree** is the model of the subject: decisions with decisions hanging off them. The **frontier** is the set of decisions whose prerequisites are all settled — the only questions that can honestly be asked yet. A **round** is one frontier, asked in full and answered in full.
+The **design tree** is the model of the subject: decisions with decisions hanging off them. The **frontier** is the set of decisions whose prerequisites are all settled and that still have at least two viable options with materially different outcomes — the only questions that can honestly be asked yet. A **round** is one frontier, asked in full and answered in full. If facts, constraints, prior decisions, or a default you delegated leave only one path, the skill records that path as a derived conclusion instead of manufacturing a question.
 
 Inside a round every question arrives in a fixed shape: numbered and titled behind a `❓`, then the body, then the agent's recommended answer alone on a `➡️` line. That is what makes a round answerable by number — "1 yes, 2 the second option, 3 no, here's why" — instead of by quoting questions back. The format has one known rough edge: the recommendation sometimes argues *against* the question as it was worded, so agreeing with the recommendation means answering "no" to the question. When that happens, answer the recommendation and say so.
 
@@ -76,6 +76,7 @@ A real and unfixed rough edge, reported across [harnesses](https://www.aihero.de
 
 - A round arrives as a numbered list, each question with its recommendation on a separate `➡️` line, and you can answer the whole round by number.
 - Nothing in a round needs another question in the same round answered first.
+- Every question offers a real choice; conclusions forced by known constraints are recorded without asking you to approve a fake alternative.
 - Later rounds ask things the first round could not have asked.
 - It goes and looks facts up — reading files, dispatching a sub-agent — rather than asking you something it could have found out.
 - Research running in the background does not stall the round; only the questions that depend on it wait.
