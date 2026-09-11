@@ -73,11 +73,13 @@ It writes the skills into your repo as ordinary files you own and can edit. Noth
 
 ### 2. Run `/setup-matt-pocock-skills`
 
-In your agent, run it once per repo. It will:
+In your agent, run it once per repo. It derives the recommended defaults from the repo, writes `docs/agents/`, and reports what it did:
 
-- Ask you which issue tracker you want to use (GitHub, Linear, or local files)
-- Ask you what labels you apply to tickets when you triage them (`/triage` uses labels)
-- Ask you where you want to save any docs we create
+- Issue tracker from your git remotes (GitHub, GitLab, or local files if there is no remote)
+- Default triage labels if `/triage` is installed
+- Domain docs at `CONTEXT.md` + `docs/adr/` (or a `CONTEXT-MAP.md` in a monorepo)
+
+Edit `docs/agents/` afterwards if you want a different tracker or label vocabulary.
 
 ### 3. Bam - you're ready to go.
 
