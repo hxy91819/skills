@@ -13,7 +13,7 @@ Reach for it as soon as you have an idea worth taking seriously (a feature, a pr
 Which of the three grilling skills you want depends on what is in front of you:
 
 - **Anything, anywhere**: `grill-me`. It needs no repo and writes no files, and the subject doesn't have to be code.
-- **A codebase to align against**: [grill-with-docs](https://aihero.dev/skills-grill-with-docs). The same interview, but [stateful](https://www.aihero.dev/ai-coding-dictionary/stateful): it reads your code and keeps what it learns in `CONTEXT.md` and ADRs.
+- **A codebase whose domain documents you want maintained**: [grill-with-docs](https://aihero.dev/skills-grill-with-docs). The same interview, but [stateful](https://www.aihero.dev/ai-coding-dictionary/stateful): it reads your code and keeps what it learns in `CONTEXT.md` and ADRs.
 - **Too big for one session**: [wayfinder](https://aihero.dev/skills-wayfinder). It charts the effort as a map and runs grilling sessions inside it.
 
 Leave [plan mode](https://www.aihero.dev/ai-coding-dictionary/agent-mode) off. Plan mode primes the agent to rush toward producing a plan, which is the opposite of staying in inquiry.
@@ -32,21 +32,14 @@ The opposite error is real but rarer: staying in the interview so long you never
 
 Some questions can be answered by talking. Others can't, and no amount of grilling will get you there.
 
-"One long form or three pages?" and "how should this interaction feel?" are **ungrillable**: they need something to react to. When you hit one, stop grilling. Build the throwaway version with [prototype](https://aihero.dev/skills-prototype), look at it, then come back and answer in one line.
+"One long form or three pages?" and "how should this interaction feel?" are **ungrillable**: they need something to react to. When you hit one, stop grilling. If you want an interactive artifact, explicitly request [prototype](https://aihero.dev/skills-prototype), inspect it, then return with the answer.
 
 Talking your way through an ungrillable question is where sessions balloon. The agent keeps rephrasing, you keep guessing, and the scope grows to fill the uncertainty.
-
-## It's working if
-
-- You disagree with something. A session with no pushback from you is a session you didn't need.
-- Questions arrive in a few rounds rather than one long drip, and later rounds clearly build on what you said earlier.
-- You end up somewhere you didn't expect, because a question surfaced a decision you had been making implicitly.
-- At the end you could defend each choice to someone who wasn't there.
 
 ## Common questions
 
 **How many questions should I expect, and how do I know when it ends?**
-Count rounds, not questions. Forty-six questions across four rounds is an ordinary session. It ends when the frontier is empty: every branch visited, nothing left silently assumed.
+There is no target count. It ends when the decisions needed for the current task are clear, with material assumptions and deferred questions visible. You can set the pace and scope; unrelated branches need not be exhausted.
 
 **It asked me two hundred questions. What went wrong?**
 Usually the scope was too large. Ask the agent to break the work into smaller pieces first, then grill each one. Very long sessions also drift into the **[dumb zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone)**, where the [context window](https://www.aihero.dev/ai-coding-dictionary/context-window) is full enough that the questions get worse.
@@ -66,6 +59,13 @@ No. The value of the session is the [context](https://www.aihero.dev/ai-coding-d
 
 **Does the model matter?**
 More than for most skills. Grilling leans on the [model](https://www.aihero.dev/ai-coding-dictionary/model)'s own sense of how systems break, so give it your best one. Implementation mostly follows context and tolerates a cheaper model.
+
+## It's working if
+
+- You disagree with something. A session with no pushback from you is a session you didn't need.
+- Questions arrive in a few rounds rather than one long drip, and later rounds clearly build on what you said earlier.
+- You end up somewhere you didn't expect, because a question surfaced a decision you had been making implicitly.
+- At the end you could defend each choice to someone who wasn't there.
 
 ## Where it fits
 

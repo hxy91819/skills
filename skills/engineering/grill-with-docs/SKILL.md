@@ -6,4 +6,4 @@ triggers:
   - user
 ---
 
-Call the Skill tool twice, for "grilling" and "domain-modeling".
+Read [grilling](../../productivity/grilling/SKILL.md) for the interview rounds and stopping condition. Call the Skill tool with "domain-modeling" to maintain the relevant glossary and ADRs within this user-requested documentation session. Continue the same flow without requiring another invocation or per-edit confirmation.

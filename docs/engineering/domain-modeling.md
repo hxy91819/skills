@@ -4,24 +4,23 @@
 
 It is the **active** discipline, not the passive one. Reading `CONTEXT.md` to borrow its vocabulary is a one-line habit any skill can do; this skill is for when you are *changing* the model. That is what makes it interrupt. It writes a resolved term into `CONTEXT.md` at the moment it is resolved, in the middle of the conversation, rather than producing a tidy glossary at the end, because the batched version is a summary of a [session](https://www.aihero.dev/ai-coding-dictionary/session), and the inline version is the session's actual output.
 
+It writes only within an authorized domain-model or documentation maintenance task. A terminology explanation alone stays a conversation, not a file edit.
+
 ## When to reach for it
 
-Type `/domain-modeling`, or the agent reaches for it automatically when a task fits. In practice, automatic invocation is the weakest part of the skill: when `grill-with-docs` or `wayfinder` say to load it, [models](https://www.aihero.dev/ai-coding-dictionary/model) frequently load `grilling` and skip this one. If a [grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) session runs and `CONTEXT.md` is untouched at the end, that is what happened; invoke it by name alongside the other skill.
-
-Reach for it when the *words* are the problem:
+Type `/domain-modeling`, or let it match an already-authorized model or documentation maintenance task. It is not triggered just because someone asks what a term means.
 
 | The situation | The move |
 | --- | --- |
-| Two people mean different things by "cancellation" | `domain-modeling`: pick the canonical term, list the other under `_Avoid_` |
-| "Account" is doing three jobs in three files | `domain-modeling`: split it into Customer and User |
-| You just made a hard-to-reverse architectural choice | `domain-modeling`: it offers an ADR, if the choice clears the bar |
-| The module's *shape* is the problem: where the seam goes, how deep the interface is | [codebase-design](https://aihero.dev/skills-codebase-design) |
-| You want the whole plan interrogated before you build | [grill-with-docs](https://aihero.dev/skills-grill-with-docs), which drives this skill underneath |
-| You want a term looked up, not changed | Nothing. Read `CONTEXT.md`. It is a file. |
+| You asked to clarify and maintain conflicting glossary terms | Resolve the term and update the authorized glossary |
+| You asked to record a durable architectural decision | Offer an ADR if it clears the three tests below |
+| You only want a term explained | Read the glossary or code; do not write files |
+| The module's shape is the question | Consult [codebase-design](https://aihero.dev/skills-codebase-design) as reference |
+| You want an interview plus maintained documents | [grill-with-docs](https://aihero.dev/skills-grill-with-docs) |
 
 ## Prerequisites
 
-None up front. The skill writes into two places and creates both lazily:
+An authorized workspace for domain documents is required. Existing files are not a prerequisite; within that scope, the skill writes into two places and creates both lazily:
 
 - **`CONTEXT.md`** at the repo root, created by the first resolved term. In a repo with a `CONTEXT-MAP.md` at the root, terms go into the per-context `CONTEXT.md` the map points at instead.
 - **`docs/adr/`**, created by the first ADR that clears the bar.
@@ -58,7 +57,7 @@ The size is a symptom, not the disease: the file has absorbed implementation det
 This is the most-argued naming question in the whole skill set and it has no settled answer. The case against the current name is good: if it is "a glossary and nothing else", `GLOSSARY.md` says so, and, as one reader put it, "with ai agents everything is [context](https://www.aihero.dev/ai-coding-dictionary/context)". The case for it is the map: `CONTEXT-MAP.md` pointing at several `CONTEXT.md` files reads naturally in a way `GLOSSARY-MAP.md` does not, and `context` is the standing DDD word for a bounded area of the model. At least one person maintains a local fork purely to rename the file. You can do the same, but every other skill in the set looks for `CONTEXT.md`, so a rename means patching all of them.
 
 **Where did `/ubiquitous-language` go?**
-It was removed, and it was not deprecated. Its job moved into `domain-modeling`, which maintains the whole model continuously rather than dumping a glossary out of one conversation. Vocabulary enforcement got more load-bearing, not less: it now runs underneath grilling, triage and mapping rather than as a separate pass you remember to do.
+It was removed, and it was not deprecated. Its job moved into `domain-modeling`, which maintains the whole model continuously rather than dumping a glossary out of one conversation. It can be used within document-maintaining flows; discussion or triage alone is not permission to write a glossary.
 
 **How do I get a glossary for a codebase that has none?**
 Ask for it explicitly rather than waiting for it to accumulate. `/grill-with-docs help me scaffold my existing repo with a CONTEXT.md` is the documented route; expect a long interrogation: one user reported 50+ questions before the file was in shape. Incidental use builds the glossary far too slowly on a brownfield repo.
@@ -83,4 +82,4 @@ No, and there is no plan for a skill that does. A domain language you do not und
 
 ## Where it fits
 
-`domain-modeling` is a **model-invoked reference** that runs *underneath* other skills more often than it runs on its own. [grill-with-docs](https://aihero.dev/skills-grill-with-docs) drives it through a grilling session, [wayfinder](https://aihero.dev/skills-wayfinder) loads it while charting a map, [triage](https://aihero.dev/skills-triage) uses it to keep [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket) in the project's own words, and [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) calls it as decisions crystallise. Its closest sibling is [codebase-design](https://aihero.dev/skills-codebase-design): the two are the vocabulary layer under everything else, this one for the *domain*, that one for the module's *shape*. It is also reachable directly, when you want the discipline without committing to the steps of whatever skill would normally pull it in. When you are unsure which skill fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
+`domain-modeling` is a model-invoked capability within authorized domain maintenance. [grill-with-docs](https://aihero.dev/skills-grill-with-docs) includes that scope. Other flows such as [wayfinder](https://aihero.dev/skills-wayfinder) and [triage](https://aihero.dev/skills-triage) use it only when document maintenance is included. [codebase-design](https://aihero.dev/skills-codebase-design) is instead an explicit design reference, not a vocabulary mandate. [ask-matt](https://aihero.dev/skills-ask-matt) maps the available flows.
