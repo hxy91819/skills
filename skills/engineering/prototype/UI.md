@@ -17,7 +17,7 @@ A UI prototype is much easier to judge when it's **butting up against the rest o
 
 ### Sub-shape A: adjustment to an existing page (preferred)
 
-The route already exists. Variants are rendered **on the same route**, gated by a `?variant=` URL search param. The existing data fetching, params, and auth all stay. Only the rendering swaps. This is the default; pick it unless there's a specific reason not to.
+The route already exists. Variants are rendered **on the same route**, gated by a `?variant=` URL search param. Preserve params and auth. Use fixtures or permitted read-only data; keep mutations stubbed. Only the rendering swaps within the authorized local prototype scope. This is the default; pick it unless there's a specific reason not to.
 
 If the prototype is for something that doesn't yet have a page but *would naturally live inside one* (a new section of the dashboard, a new card on the settings screen, a new step in an existing flow), it's still sub-shape A. Mount the variants inside the host page.
 
@@ -97,12 +97,7 @@ Surface the URL (and the `?variant=` keys). The user will flip through whenever 
 
 ### 6. Capture the answer and clean up
 
-Once a variant has won, capture the answer (which variant and why), then capture the prototype the way the [SKILL](SKILL.md) describes. Fold the winner into the real code and move the rest onto the throwaway branch, not into main:
-
-- **Sub-shape A**: fold the winner into the existing page; drop the losing variants and the switcher from main.
-- **Sub-shape B**: promote the winning variant to a real route; drop the throwaway route and the switcher from main.
-
-The full set of variants is the primary source, so it lands on the throwaway branch, not the bin, since variant components and the switcher left in the main branch rot fast and confuse the next reader.
+Once a variant has won, summarise which variant and why, and deliver the local prototype as [SKILL.md](SKILL.md) describes. Explain what production work and cleanup would be needed, but do not promote routes, rewrite real pages, commit, publish a branch, or update an issue without authorization for those actions.
 
 ## Anti-patterns
 

@@ -12,7 +12,7 @@ You invoke this by typing `/ask-matt`; the agent won't reach for it on its own.
 | --- | --- |
 | An idea, and no idea where to start | The head of the main flow, and whether the build is small enough to skip the spec |
 | Bugs and requests arriving from other people | The [triage](https://aihero.dev/skills-triage) on-ramp, and why [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket) you generated yourself don't belong on it |
-| Two skills that look interchangeable | The line between them, and it is usually one concrete test rather than a matter of taste. [grill-me](https://aihero.dev/skills-grill-me) or [grill-with-docs](https://aihero.dev/skills-grill-with-docs) turns on whether you are in a working directory; [grill-with-docs](https://aihero.dev/skills-grill-with-docs) or [wayfinder](https://aihero.dev/skills-wayfinder) turns on whether the effort fits one session |
+| Two skills that look interchangeable | The line between them, and it is usually one concrete test rather than a matter of taste. [grill-me](https://aihero.dev/skills-grill-me) or [grill-with-docs](https://aihero.dev/skills-grill-with-docs) turns on whether you want domain documents maintained; [grill-with-docs](https://aihero.dev/skills-grill-with-docs) or [wayfinder](https://aihero.dev/skills-wayfinder) turns on whether the effort fits one session |
 | A long session and a decision about the [context](https://www.aihero.dev/ai-coding-dictionary/context) | The ordered tree over the five options at a phase boundary |
 | A skill you have already picked | Nothing useful. Invoke that skill directly. |
 
@@ -26,10 +26,10 @@ The tracker-dependent routes (triage, `to-spec`, `to-tickets`, `implement`) assu
 
 The word the skill gives you to think with is **flow**: a path *through* the skills, not a single one. Naming your situation places you on a flow at a step, which is a different answer from "here is the skill that matches your keywords". Four kinds of route exist, and the skill itself carries them in full:
 
-- **The main flow**, idea to ship. Grill, spec, tickets, implement, review, with two branches inside it: a prototype detour when a question needs runnable code to settle, and the spec-and-tickets split, which only earns its cost when the build spans more than one session.
-- **On-ramps**, for a situation that generates work and then merges onto the main flow: incoming bug reports, something broken, or an effort too foggy and too large to hold in one session.
-- **Standalones**, off every flow, reached for on their own terms: the prototype, the questionnaire, the merge conflict you are already sitting in.
-- **A vocabulary layer underneath**, the two references the other skills pull in when the words rather than the process are the problem.
+- **The main flow**, idea to ship. Grill, spec, tickets, implement, review, with two branches inside it: an explicitly requested interactive prototype detour, and the spec-and-tickets split, which only earns its cost when the build spans more than one session.
+- **On-ramps**, for a situation that generates work and then merges onto the main flow: incoming bug reports, complex or intermittent bugs, or an effort too foggy and too large to hold in one session.
+- **Standalones**, off every flow, reached for on their own terms: a requested prototype, an explicit wizard, or a questionnaire.
+- **A vocabulary layer underneath**, authorized domain maintenance and explicit design references, with different scope and selection rules.
 
 ## The phase boundary
 
@@ -49,11 +49,11 @@ Two of those are routinely got wrong, which is why the router carries the order 
 
 **Isn't there just a list of the skills in the right order?**
 
-People keep asking for one in the README. This skill is that list: it is what it exists for. A static table would say `wayfinder → to-spec → to-tickets → implement → code-review` and be wrong for most situations, because the interesting parts are the branches: is there a codebase, does the build span sessions, can this question be settled by talking. The honest cost is that the router is hand-maintained and lags the repo. `/grilling` and `/resolving-merge-conflicts` both shipped long before the router named them.
+The router is the maintained map of current entries and their relationships. The interesting parts are the branches: whether you want documents maintained, whether the build spans sessions, and whether you explicitly want an interactive prototype. Retired entries are no longer routes.
 
 **It told me half the skills aren't installed.**
 
-A known bug, unfixed. Most of the skills the router routes you through set `disable-model-invocation: true`, which means the harness leaves them out of the skill list it injects into the agent's context. The agent reads that list as exhaustive and reports them missing. One reported session had it declare the whole spec-and-tickets flow absent and reroute to bare `/grilling` and `/tdd`. Thirteen of the plugin's twenty-two skills carry the flag, so this is the common case rather than an edge. They are installed. Type the slash command anyway, or check `.claude-plugin/plugin.json`, which is the authority on what is present.
+Host discovery is not a reliable inventory of installed files. Explicit-only entries may be omitted from automatic selection or listings, depending on the host. Check `.claude-plugin/plugin.json` and the files themselves, and invoke the intended entry explicitly rather than assuming a missing automatic suggestion means it is absent.
 
 **It described a skill's behaviour, and the skill doesn't do that.**
 

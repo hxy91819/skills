@@ -29,7 +29,7 @@ Where it is confusable with siblings:
 
 None to run it. It reads `CONTEXT.md` and any ADRs in `docs/adr/` if they exist, and speaks in your domain's own nouns when they do: a candidate reads as "deepen the Order intake module," not "refactor the FooBarHandler."
 
-It writes in two places. The report goes to `<tmpdir>/architecture-review-<timestamp>.html`, outside the repo. During the grilling loop it will add or sharpen terms in `CONTEXT.md`, creating that file if it does not exist, and offer to record a rejected candidate as an ADR so a future run does not re-suggest it.
+It writes in two places. The report goes to `<tmpdir>/architecture-review-<timestamp>.html`, outside the repo. During the interview, it may add or sharpen terms in `CONTEXT.md` and offer an ADR only when maintaining those documents is authorized.
 
 ## Depth, and the report that hunts for it
 
@@ -73,7 +73,7 @@ Partly. It is strong on big existing codebases lacking consistent structure, and
 
 **How is this different from `/codebase-design`?**
 
-`/codebase-design` is a reference, not a session driver. It supplies the vocabulary (module, interface, depth, seam, adapter, leverage, locality), and this skill borrows it. Pointing a fresh agent at `/codebase-design` as the thing to "do" is a known failure: with no process of its own to follow, the agent invents one, re-explores code and runs for a very long time before asking you anything. Drive with this skill; consume that one.
+`/codebase-design` is an explicit reference, not a session driver. This flow reads it only when interface depth or seam placement needs clarification, using the project's own terms. Alternative designs do not require parallel agents.
 
 **Will it ever tell me the codebase is fine?**
 
@@ -98,4 +98,4 @@ There is no good answer shipped with the skill. The recurring request is for a `
 
 ## Where it fits
 
-`improve-codebase-architecture` is **periodic maintenance**: run it every few days, outside any chain, to queue up work rather than to do it. Its neighbours are [codebase-design](https://aihero.dev/skills-codebase-design), which owns the depth-and-seam vocabulary every candidate is written in, [grilling](https://aihero.dev/skills-grilling), which walks the decision tree once you have chosen a candidate, and [domain-modeling](https://aihero.dev/skills-domain-modeling), which keeps `CONTEXT.md` and the ADRs current as the decision settles. What it produces is an idea, which re-enters the main build flow at [grill-with-docs](https://aihero.dev/skills-grill-with-docs) or [to-spec](https://aihero.dev/skills-to-spec). For which skill fits a situation, [ask-matt](https://aihero.dev/skills-ask-matt) is the router over the whole set.
+`improve-codebase-architecture` is **periodic maintenance**: run it every few days, outside any chain, to queue up work rather than to do it. Its neighbours are [codebase-design](https://aihero.dev/skills-codebase-design), which supplies optional depth-and-seam design guidance, [grilling](https://aihero.dev/skills-grilling), which walks the decision tree once you have chosen a candidate, and [domain-modeling](https://aihero.dev/skills-domain-modeling), which keeps `CONTEXT.md` and the ADRs current when document maintenance is authorized. What it produces is an idea, which re-enters the main build flow at [grill-with-docs](https://aihero.dev/skills-grill-with-docs) or [to-spec](https://aihero.dev/skills-to-spec). For which skill fits a situation, [ask-matt](https://aihero.dev/skills-ask-matt) is the router over the whole set.

@@ -1,9 +1,14 @@
 ---
 name: wizard
-description: Generate an interactive bash wizard that walks a human through steps only they can perform. Use when provisioning infrastructure, setting up credentials or CI secrets, walking an unfamiliar third-party dashboard, or running a one-off migration or cutover. Don't invoke this for steps the agent can perform itself.
+description: Generate an interactive bash wizard for an explicitly requested human-run procedure.
+disable-model-invocation: true
+triggers:
+  - user
 ---
 
 # Wizard
+
+Generate a script only when the user explicitly asks for a wizard. A missing credential or dashboard step alone calls for concise instructions or the host's secure input path, not automatic script generation. Generating a wizard does not authorize running it or performing its remote writes.
 
 A **wizard** is a bash script that walks a human, step by step, through a manual procedure that's tedious to do by hand and tedious to re-explain to an AI every time. It opens each URL, says exactly what to click and copy, captures the values, writes them where they belong (`.env`, GitHub secrets), confirms at every stage, and shows how many stages are left. It might configure third-party services, run a one-off migration, or move the project from one state to another.
 
@@ -17,7 +22,7 @@ A wizard is ephemeral by default: built for one run, saved to a scratch or `scri
 
 Work out every manual step the human must take and every value that gets captured along the way. Read the repo first, don't ask cold:
 
-- For setup: `.env`, `.env.example`, `.env.*`, `README`, `docker-compose*`, framework config, and `.github/workflows/*` (every `secrets.*` / `vars.*` reference is a value the wizard must produce).
+- For setup: non-secret examples such as `.env.example`, README, configuration schemas, and secret/variable names referenced by workflows. Read names and documented destinations, not secret-bearing `.env` files, credential stores, or secret values. Scope only the values the requested procedure needs; existing secret names do not imply they must be regenerated.
 - For a migration or transition: the current state, the target state, and the irreversible actions between them.
 
 Then show the user the ordered list of stages and the values each produces, and confirm: they may add, drop, or reorder.
@@ -41,4 +46,4 @@ Hold the bar the template sets: open the URL before asking for its value, use `a
 - `bash -n <script>`; run `shellcheck` if available.
 - `chmod +x <script>`.
 - Don't run it end-to-end yourself: it opens browsers and blocks on human input. Trace it statically instead: every value from step 1 is captured and lands where step 1 said, and every `set_secret` name exactly matches a `secrets.*` reference in CI.
-- Tell the user how to run it. If it's a repeatable setup path, commit it and link it from the README so the next person runs the script instead of asking an AI.
+- Tell the user how to run it and which external writes its stages perform. For a repeatable setup path, link it from the README and commit only when those repository changes are authorized. Never include secret values in the script or handoff.
