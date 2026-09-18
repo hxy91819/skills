@@ -27,11 +27,11 @@ The spec exists because context windows end. Everything you settled while [grill
 
 So it does not validate anything, and it does not decide anything. It captures what was decided, in your project's own vocabulary, so that a fresh session can pick the work up without you re-explaining it. Anything the spec asserts that you never actually said is a defect.
 
-## Seams before prose
+## Test boundaries before prose
 
-Before it writes a word, `to-spec` sketches the **seams** the feature will be tested at, and checks them with you. It prefers seams that already exist to new ones, and takes the highest seam it can: the ideal number across a change is one.
+Before it writes a word, `to-spec` sketches the **test boundaries** the feature will be tested at, and checks them with you. It prefers test boundaries that already exist to new ones, and takes the highest test boundary it can: the ideal number across a change is one.
 
-Those agreed seams then travel. [tdd](https://aihero.dev/skills-tdd) works only at pre-agreed seams, and [code-review](https://aihero.dev/skills-code-review) reviews the diff against the spec, so a seam nobody agreed to shows up as a review finding. The binding is indirect: it runs through this document, which is exactly why the seam conversation is worth taking seriously here rather than deferring it to implementation.
+Those agreed test boundaries then travel. [tdd](https://aihero.dev/skills-tdd) works only at pre-agreed test boundaries, and [code-review](https://aihero.dev/skills-code-review) reviews the diff against the spec, so a test boundary nobody agreed to shows up as a review finding. The binding is indirect: it runs through this document, which is exactly why the test boundary conversation is worth taking seriously here rather than deferring it to implementation.
 
 ## Common questions
 
@@ -48,7 +48,7 @@ Often you should; the spec earns its step only on multi-session work. Where it p
 The main map issue: `/to-spec #<map_issue>`, not the individual decision tickets. [wayfinder](https://aihero.dev/skills-wayfinder) produces decisions rather than deliverables, scattered across a map; `to-spec` is the step that collapses them into one buildable document. Looping the map straight into `/implement` throws that collapse away.
 
 **Is the spec for me to review, or is it just for the agent?**
-Mostly for the agent, and it reads that way: complete, dense, reference-heavy. The parts worth your eyes are the seams and the out-of-scope section, because those are the two places a wrong decision is cheapest to catch and most expensive to discover later. Reading the whole thing end to end is a real complaint people have, and there is no summary mode: the honest answer is that if the spec surprises you, the grilling was too shallow, not the spec too long.
+Mostly for the agent, and it reads that way: complete, dense, reference-heavy. The parts worth your eyes are the test boundaries and the out-of-scope section, because those are the two places a wrong decision is cheapest to catch and most expensive to discover later. Reading the whole thing end to end is a real complaint people have, and there is no summary mode: the honest answer is that if the spec surprises you, the grilling was too shallow, not the spec too long.
 
 **Do I keep the spec frozen once tickets start, or let the agent rewrite it?**
 Nothing keeps it in sync, so in practice it is a snapshot of what you knew at that moment, and it goes stale the first time implementation teaches you something. Treat it as throwaway once the work ships. The artifacts meant to outlive it are your `CONTEXT.md` and your ADRs; if something learned during implementation deserves to last, it belongs there, not in an edited spec.
@@ -65,7 +65,7 @@ Very large specs can outgrow what a tracker issue will serve back cleanly, and t
 ## It's working if
 
 - It starts writing rather than asking you a fresh round of questions.
-- It puts the seams to you before it writes, and proposes as few as it can get away with.
+- It puts the test boundaries to you before it writes, and proposes as few as it can get away with.
 - It comes back in your project's nouns, not generic product-management boilerplate.
 - Every decision in it is one you can remember making. Nothing was invented to fill a section.
 - The out-of-scope section has real things in it: the things you refused are usually the most useful lines on the page.

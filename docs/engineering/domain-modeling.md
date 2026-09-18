@@ -15,7 +15,7 @@ Reach for it when the *words* are the problem:
 | Two people mean different things by "cancellation" | `domain-modeling`: pick the canonical term, list the other under `_Avoid_` |
 | "Account" is doing three jobs in three files | `domain-modeling`: split it into Customer and User |
 | You just made a hard-to-reverse architectural choice | `domain-modeling`: it offers an ADR, if the choice clears the bar |
-| The module's *shape* is the problem: where the seam goes, how deep the interface is | [codebase-design](https://aihero.dev/skills-codebase-design) |
+| The module's *shape* is the problem: where the swap point goes, how deep the interface is | [codebase-design](https://aihero.dev/skills-codebase-design) |
 | You want the whole plan interrogated before you build | [grill-with-docs](https://aihero.dev/skills-grill-with-docs), which drives this skill underneath |
 | You want a term looked up, not changed | Nothing. Read `CONTEXT.md`. It is a file. |
 
