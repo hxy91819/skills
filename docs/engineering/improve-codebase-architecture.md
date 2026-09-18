@@ -17,13 +17,13 @@ It is not a step in the main build loop. You run it periodically to queue up mor
 | Routine upkeep | Run it every few days, or when you have a spare moment, so the structure does not decay between features. |
 | Before a big build | Point it at the [spec](https://www.aihero.dev/ai-coding-dictionary/spec) and ask "how can we make this change easy?" This is the most effective prompt for it. |
 | Brownfield audit | Run it on a large, unstructured or [vibe-coded](https://www.aihero.dev/ai-coding-dictionary/vibe-coding) repo to find out what shape it is in. |
-| Legacy test work | Use it to find the missing seams before you write tests against untestable code. |
+| Legacy test work | Use it to find the missing swap points before you write tests against untestable code. |
 
 Where it is confusable with siblings:
 
 - To design one module you have already chosen, use [codebase-design](https://aihero.dev/skills-codebase-design). This skill finds the module to work on, and `codebase-design` is where you design it.
 - For a whole effort too big to hold in one session, use [wayfinder](https://aihero.dev/skills-wayfinder).
-- For "this specific thing is broken," use [diagnosing-bugs](https://aihero.dev/skills-diagnosing-bugs). It sends you back here when the real finding is that there is no good seam to lock the bug down.
+- For "this specific thing is broken," use [diagnosing-bugs](https://aihero.dev/skills-diagnosing-bugs). It sends you back here when the real finding is that there is no good test boundary to lock the bug down.
 
 ## Prerequisites
 
@@ -36,7 +36,7 @@ It writes in two places. The report goes to `<tmpdir>/architecture-review-<times
 The skill rests on one idea: **depth**. A deep module puts a lot of behaviour behind a small, stable interface. A shallow module exposes its implementation through an interface nearly as wide as the code beneath it. The report looks for three forms of shallowness:
 
 - Pure functions extracted only for testability, while the real bugs are in how callers use them (no **locality**).
-- Modules that leak across their **seams**.
+- Modules that leak across their **swap points**.
 - A concept you cannot understand without opening five files.
 
 For each one, it proposes the deepening that fixes it.
@@ -53,7 +53,7 @@ The report ends with a **Top recommendation**, the candidate it would do first. 
 
 ## What happens after you pick one
 
-When you pick a candidate, a [grilling](https://aihero.dev/skills-grilling) session starts on it. It covers the constraints, what goes behind the seam, which tests survive, and what the deepened interface should look like. The output of that session is a decision, not a diff. From there the normal flow applies: take the decision into [to-spec](https://aihero.dev/skills-to-spec), then [to-tickets](https://aihero.dev/skills-to-tickets), then [implement](https://aihero.dev/skills-implement).
+When you pick a candidate, a [grilling](https://aihero.dev/skills-grilling) session starts on it. It covers the constraints, what goes behind the swap point, which tests survive, and what the deepened interface should look like. The output of that session is a decision, not a diff. From there the normal flow applies: take the decision into [to-spec](https://aihero.dev/skills-to-spec), then [to-tickets](https://aihero.dev/skills-to-tickets), then [implement](https://aihero.dev/skills-implement).
 
 ## Common questions
 
@@ -79,7 +79,7 @@ Partly. It works well on big existing codebases that lack consistent structure, 
 
 **How is this different from `/codebase-design`?**
 
-`/codebase-design` is a reference, not a session driver. It supplies the vocabulary (module, interface, depth, seam, adapter, leverage, locality), and this skill uses it. If you give a fresh agent `/codebase-design` as the task, it fails in a known way. It has no process of its own to follow, so the agent invents one, explores the code again, and runs for a very long time before it asks you anything. Run this skill, and let it use that one.
+`/codebase-design` is a reference, not a session driver. It supplies the vocabulary (module, interface, depth, swap point, adapter, leverage, locality), and this skill uses it. If you give a fresh agent `/codebase-design` as the task, it fails in a known way. It has no process of its own to follow, so the agent invents one, explores the code again, and runs for a very long time before it asks you anything. Run this skill, and let it use that one.
 
 **Will it ever tell me the codebase is fine?**
 
@@ -91,7 +91,7 @@ Partly. The exploration step names Claude Code's `Agent` tool with `subagent_typ
 
 **How do I actually implement deep modules in TypeScript?**
 
-The skill does not ship a good answer. People often ask for a `TYPESCRIPT.md` with concrete file and module layouts for the principles, and it does not exist. The skill tells you where a deepening belongs and what goes behind the seam. You must turn that into a package or directory structure yourself.
+The skill does not ship a good answer. People often ask for a `TYPESCRIPT.md` with concrete file and module layouts for the principles, and it does not exist. The skill tells you where a deepening belongs and what goes behind the swap point. You must turn that into a package or directory structure yourself.
 
 ## It's working if
 
@@ -106,7 +106,7 @@ The skill does not ship a good answer. People often ask for a `TYPESCRIPT.md` wi
 
 `improve-codebase-architecture` is **periodic maintenance**. You run it every few days, outside any chain, to queue up work, not to do it. Its neighbours:
 
-- [codebase-design](https://aihero.dev/skills-codebase-design) owns the depth-and-seam vocabulary that every candidate uses.
+- [codebase-design](https://aihero.dev/skills-codebase-design) owns the depth-and-swap point vocabulary that every candidate uses.
 - [grilling](https://aihero.dev/skills-grilling) walks the decision tree after you choose a candidate.
 - [domain-modeling](https://aihero.dev/skills-domain-modeling) keeps `GLOSSARY.md` and the ADRs current as you make the decision.
 
