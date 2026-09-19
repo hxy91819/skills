@@ -19,7 +19,7 @@ See [tests.md](tests.md) for examples and [mocking.md](mocking.md) for mocking g
 
 A **test boundary**（测试边界）is the public boundary you test at: the interface where you observe behavior without reaching inside. Tests live at test boundaries, never against internals. In Chinese output, say "测试边界".
 
-**Test only at pre-agreed test boundaries.** Before writing any test, write down the test boundaries under test and confirm them with the user. No test is written at an unconfirmed test boundary. You can't test everything, so agreeing the test boundaries up front is how testing effort lands on the critical paths and complex logic instead of every edge case.
+**Test only at pre-agreed test boundaries.** Before writing any test, write down the test boundaries under test and confirm them with the user; a spec's Testing Decisions table counts as that confirmation. No test is written at an unconfirmed test boundary. You can't test everything, so agreeing the test boundaries up front is how testing effort lands on the critical paths and complex logic instead of every edge case.
 
 Ask: "What's the public interface, and which test boundaries should we test?"
 
