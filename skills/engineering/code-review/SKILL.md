@@ -1,14 +1,15 @@
 ---
 name: code-review
-description: "Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes: Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/spec asked for?). Runs both reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to \"review since X\"."
+description: "Review the changes since a fixed point (commit, branch, tag, or merge-base) along three axes: Standards (does the code follow this repo's documented coding standards?), Spec (does the code match what the originating issue/spec asked for?) and Tests (does every row of the spec's regression contract have a test at its declared boundary, and were existing tests changed?). Runs all three reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to \"review since X\"."
 ---
 
-Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
+Three-axis review of the diff between `HEAD` and a fixed point the user supplies:
 
 - **Standards**: does the code conform to this repo's documented coding standards?
 - **Spec**: does the code faithfully implement the originating issue / spec?
+- **Tests**: does every row of the spec's regression contract (its Testing Decisions table) have a test at the declared boundary, and were existing browser e2e or API tests changed?
 
-Both axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
+All three axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
 
 The issue tracker should have been provided to you. If `docs/agents/issue-tracker.md` is missing, tell the user to run `/setup-matt-pocock-skills`.
 
@@ -30,6 +31,8 @@ Look for the originating spec, in this order:
 2. A path the user passed as an argument.
 3. A spec file under `docs/`, `specs/`, or `.scratch/` matching the branch name or feature.
 4. If nothing is found, ask the user where the spec is. If they say there isn't one, the **Spec** sub-agent will skip and report "no spec available".
+
+Also pull out the spec's Testing Decisions table, or the tickets' test criteria; the **Tests** axis reads it. If neither exists, the Tests sub-agent derives the rows itself and says so.
 
 ### 3. Identify the standards sources
 
@@ -55,7 +58,7 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 - **Middle Man**: a class or function that mostly just delegates onward. → cut it, call the real target direct.
 - **Refused Bequest**: a subclass or implementer that ignores or overrides most of what it inherits. → drop the inheritance, use composition.
 
-### 4. Spawn both sub-agents in parallel
+### 4. Spawn all three sub-agents in parallel
 
 **Standards sub-agent prompt** should include:
 
@@ -71,17 +74,24 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 
 If the spec is missing, skip the Spec sub-agent and note this in the final report.
 
+**Tests sub-agent prompt** should include:
+
+- The diff command and commit list.
+- The spec's Testing Decisions table, or the tickets' test criteria. If neither exists, say so and derive one row per story from the spec by this rule: browser e2e for a story that changes what a user sees or does, api for one that changes a request, response, or persisted side effect.
+- The brief: "Per row, report (a) rows with no test in the diff; (b) rows whose test sits below the declared boundary (declared browser e2e, delivered unit, controller or service test); (c) rows whose test exists but doesn't assert the story's observable behaviour. Then (d) every existing browser e2e or API test the diff modified or deleted: quote the hunk and classify it. Either the spec asks for the old behaviour to change (cite the spec line), or the old test was wrong (say what the spec says the behaviour is), or the assertion was weakened or removed with no spec line asking for it, which means the test was right and the code regressed. The commit message's stated reason is input, not verdict. Do not report on unit test coverage. Under 400 words."
+
 ### 5. Aggregate
 
-Present the two reports under `## Standards` and `## Spec` headings, verbatim or lightly cleaned. Do **not** merge or rerank findings, because the two axes are deliberately separate (see _Why two axes_).
+Present the three reports under `## Standards`, `## Spec` and `## Tests` headings, verbatim or lightly cleaned. Do **not** merge or rerank findings, because the axes are deliberately separate (see _Why three axes_).
 
 End with a one-line summary: total findings per axis, and the worst issue _within each axis_ (if any). Don't pick a single winner across axes: that's the reranking the separation exists to prevent.
 
-## Why two axes
+## Why three axes
 
-A change can pass one axis and fail the other:
+A change can pass one axis and fail another:
 
 - Code that follows every standard but implements the wrong thing → **Standards pass, Spec fail.**
 - Code that does exactly what the issue asked but breaks the project's conventions → **Spec pass, Standards fail.**
+- Code that does what the issue asked, with a pile of unit tests, and no test that would catch the feature regressing → **Spec pass, Tests fail.**
 
-Reporting them separately stops one axis from masking the other.
+Reporting them separately stops one axis from masking another. The Tests axis exists because a diff with many new test files reads as well tested; only checking the contract row by row shows a `browser e2e` row delivered as a controller test.

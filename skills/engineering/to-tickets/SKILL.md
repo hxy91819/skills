@@ -33,6 +33,7 @@ Break the work into **tracer bullet** tickets.
 - Each slice cuts a narrow but COMPLETE path through every layer (schema, API, UI, tests): vertical, NOT a horizontal slice of one layer
 - A completed slice is demoable or verifiable on its own
 - Each slice is sized to fit in a single fresh context window
+- Each slice carries the spec's Testing Decisions rows for the stories it delivers, as acceptance criteria; the slice is not demoable until those tests exist and pass at the declared boundary. With no spec table, derive the rows by the same rule: browser e2e for a story that changes what a user sees or does, api for one that changes a request, response, or persisted side effect
 - Any prefactoring should be done first
 
 </vertical-slice-rules>
@@ -80,6 +81,7 @@ Do NOT close or modify any parent issue.
 
 - [ ] Acceptance criterion 1
 - [ ] Acceptance criterion 2
+- [ ] Tests: <browser e2e | api> test for story <N> exists and passes
 
 </local-ticket-template>
 
@@ -97,6 +99,7 @@ The end-to-end behaviour this ticket makes work, from the user's perspective, no
 
 - [ ] Criterion 1
 - [ ] Criterion 2
+- [ ] Tests: <browser e2e | api> test for story <N> exists and passes
 
 ## Blocked by
 
