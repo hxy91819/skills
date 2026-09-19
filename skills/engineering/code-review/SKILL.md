@@ -94,4 +94,4 @@ A change can pass one axis and fail another:
 - Code that does exactly what the issue asked but breaks the project's conventions → **Spec pass, Standards fail.**
 - Code that does what the issue asked, with a pile of unit tests, and no test that would catch the feature regressing → **Spec pass, Tests fail.**
 
-Reporting them separately stops one axis from masking another. The Tests axis exists because a diff with many new test files reads as well tested; only checking the contract row by row shows a `browser e2e` row delivered as a controller test.
+Reporting them separately stops one axis from masking another.
