@@ -46,6 +46,8 @@ The skill's central idea is the **test boundary**, the public boundary you obser
 
 The "pre-agreed" part matters, and it is also the skill's weakest point. Nothing inside `implement` agrees the test boundaries. `tdd` is the skill that asks, and it refuses to write a test at an unconfirmed test boundary. So in practice the agreement happens either upstream in the spec, or in the first exchange of the run. If it happens nowhere, the run becomes "just write the code" and nothing warns you. Naming the test boundaries in the spec is what stops that.
 
+The spec's Testing Decisions table is also the run's completion list. A story whose row says `browser e2e` or `api` is not done until a test at that boundary exists and passes, and the skill is told not to substitute a lower one. When an existing browser e2e or API test breaks under the change, the skill decides whether the test or the code is wrong and records which it changed, and why, in the commit message. That one line is what lets a reviewer or the next agent tell a fixed regression from a silenced one without anyone having to gate the decision.
+
 ## Common questions
 
 **It finished, but my ticket is still open and the acceptance criteria are still unchecked.**
@@ -64,7 +66,7 @@ Not built in. It commits straight to the current branch. Several people find thi
 
 `code-review` reviews `git diff <fixed-point>...HEAD`, which excludes staged and working-tree changes. `implement` runs it before committing, so unless an interim commit already exists there is nothing in that diff to review. Multiple people have reported this and it is unfixed on both sides. Commit first, then review against the point you branched from.
 
-Separately, some people do not want the review inside the run at all, because an agent reviewing the code it just wrote is biased toward its own solution. Running [code-review](https://aihero.dev/skills-code-review) in a fresh session against a fixed point is a valid alternative. The same bias is why that skill runs its two axes in separate sub-agents.
+Separately, some people do not want the review inside the run at all, because an agent reviewing the code it just wrote is biased toward its own solution. Running [code-review](https://aihero.dev/skills-code-review) in a fresh session against a fixed point is a valid alternative. The same bias is why that skill runs its three axes in separate sub-agents.
 
 **One ticket burned 150k tokens. Am I using it wrong?**
 

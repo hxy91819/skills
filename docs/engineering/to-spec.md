@@ -31,6 +31,8 @@ So the spec does not validate or decide anything. It records what you decided, i
 
 Before it writes anything, `to-spec` sketches the **test boundaries** where the feature will be tested, and checks them with you. It prefers existing test boundaries to new ones, and picks the highest test boundary it can. The ideal number of test boundaries for a change is one.
 
+Two of those boundaries are not up for negotiation, because they are the ones that catch a regression after the feature ships: a story that changes what a user sees or does gets a browser end-to-end test, and a story that changes a request, response, or persisted side effect gets an API test. The spec records this as a table under Testing Decisions, one row per story, and a lower boundary (unit, controller, service) never substitutes for either. Unit tests are left to the implementer. The end-to-end set stays lean on purpose: one scenario per story for the main path and one for denial, with combinatorics pushed down to the API boundary.
+
 Other skills use those agreed test boundaries later. [tdd](https://aihero.dev/skills-tdd) works only at test boundaries you agreed in advance. [code-review](https://aihero.dev/skills-code-review) reviews the diff against the spec, so a test boundary nobody agreed to shows up as a review finding. Both connections go through this document. That is why you should take the test boundary conversation seriously here, and not leave it for implementation.
 
 ## Common questions

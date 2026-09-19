@@ -16,6 +16,8 @@ The issue tracker and triage label vocabulary should have been provided to you. 
 
 2. Sketch out the test boundaries at which you're going to test the feature. Existing test boundaries should be preferred to new ones. Use the highest test boundary possible. If new test boundaries are needed, propose them at the highest point you can. The fewer test boundaries across the codebase, the better - the ideal number is one.
 
+Two boundaries are fixed, because they are what catches a regression after the feature ships: a story that changes what a user sees or does gets a **browser end-to-end** test; a story that changes a request, response, or persisted side effect gets an **API** test. A lower boundary (unit, controller, service) never stands in for either. Unit tests are the implementer's call and are not planned here. Keep the end-to-end set lean: one scenario per story for the main path and one for denial; combinatorics belong at the API boundary.
+
 Check with the user that these test boundaries match their expectations.
 
 3. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
@@ -63,8 +65,16 @@ Exception: if a prototype produced a snippet that encodes a decision more precis
 A list of testing decisions that were made. Include:
 
 - A description of what makes a good test (only test external behavior, not implementation details)
-- Which modules will be tested
 - Prior art for the tests (i.e. similar types of tests in the codebase)
+- The regression contract: one row per user story. `/to-tickets`, `/implement` and `/code-review` read this table, so a story missing from it carries no test obligation.
+
+| Story | Boundary | Proven by |
+| --- | --- | --- |
+| 1 | browser e2e | the suite or scenario, by name, not path |
+| 2 | api | ... |
+| 3 | none: reason | |
+
+`browser e2e` for a story that changes what a user sees or does; `api` for a story that changes a request, response, or persisted side effect; `none` only with a reason. A lower boundary never substitutes.
 
 ## Out of Scope
 
