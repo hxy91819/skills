@@ -1,8 +1,8 @@
 ## What it does
 
-`code-review` reviews the diff between `HEAD` and a fixed point you name (a commit, a branch, a tag, `main`, `HEAD~5`) along two axes. **Standards** asks whether the code follows how this repo writes code. **Spec** asks whether the code does what the originating issue or [spec](https://www.aihero.dev/ai-coding-dictionary/spec) asked for. Each axis runs in its own [sub-agent](https://www.aihero.dev/ai-coding-dictionary/subagent) so neither sees the other's reasoning.
+`code-review` reviews the diff between `HEAD` and a fixed point you name (a commit, a branch, a tag, `main`, `HEAD~5`) along three axes. **Standards** asks whether the code follows how this repo writes code. **Spec** asks whether the code does what the originating issue or [spec](https://www.aihero.dev/ai-coding-dictionary/spec) asked for. **Tests** asks whether every row of the spec's regression contract (the Testing Decisions table) has a test at the boundary it declared, and whether the diff touched existing browser e2e or API tests. Each axis runs in its own [sub-agent](https://www.aihero.dev/ai-coding-dictionary/subagent) so none sees another's reasoning.
 
-The two axes are never merged and never re-ranked. The report ends with a worst issue *per axis* and refuses to name a single winner across them, because a change can pass one axis and fail the other: code that follows every convention while implementing the wrong thing passes Standards and fails Spec; code that does exactly what the [ticket](https://www.aihero.dev/ai-coding-dictionary/ticket) asked while breaking the repo's conventions does the reverse. A blended verdict lets the passing axis hide the failing one.
+The axes are never merged and never re-ranked. The report ends with a worst issue *per axis* and refuses to name a single winner across them, because a change can pass one axis and fail another: code that follows every convention while implementing the wrong thing passes Standards and fails Spec; code that does exactly what the [ticket](https://www.aihero.dev/ai-coding-dictionary/ticket) asked while breaking the repo's conventions does the reverse; code that does the right thing with a pile of unit tests and nothing that would catch the feature regressing passes Spec and fails Tests. A blended verdict lets the passing axis hide the failing one.
 
 ## When to reach for it
 
@@ -32,14 +32,20 @@ The Spec axis needs a spec to exist and be findable. It looks in this order:
 
 Step 1 depends on `docs/agents/issue-tracker.md`, which [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) writes. Without it the axis still works if you hand it a path. With no spec at all, the Spec sub-agent is skipped and the report says "no spec available" rather than inventing requirements.
 
-## The two axes
+The Tests axis reads the spec's Testing Decisions table, or the tickets' test criteria. With neither, it derives one row per story by the same rule the spec would have used (browser e2e for a story that changes what a user sees or does, api for one that changes a request, response, or persisted side effect) and says it did so.
 
-| | Standards | Spec |
-| --- | --- | --- |
-| Question | Is it built right? | Is it the right thing? |
-| Reads | The repo's documented standards, plus the smell baseline | The originating issue or spec |
-| Reports | Documented breaches (can be hard), and smells (always judgement calls) | Missing or partial requirements, scope creep, requirements implemented wrongly |
-| Every finding cites | The standards file and the rule, or the named smell plus the hunk | The line of the spec |
+## The three axes
+
+| | Standards | Spec | Tests |
+| --- | --- | --- | --- |
+| Question | Is it built right? | Is it the right thing? | Would it be caught if it regressed? |
+| Reads | The repo's documented standards, plus the smell baseline | The originating issue or spec | The spec's Testing Decisions table |
+| Reports | Documented breaches (can be hard), and smells (always judgement calls) | Missing or partial requirements, scope creep, requirements implemented wrongly | Rows with no test, rows delivered below their declared boundary, tests that don't assert the story, existing e2e or API tests weakened or removed without a spec line asking for it |
+| Every finding cites | The standards file and the rule, or the named smell plus the hunk | The line of the spec | The row of the table, plus the hunk |
+
+The Tests axis exists because a diff with many new test files reads as well tested. Only checking the contract row by row shows a `browser e2e` row that was delivered as a controller test, which is the shape that lets a feature ship with nothing standing between it and a silent regression. It deliberately says nothing about unit test coverage: unit tests are the implementer's call.
+
+The axis also rules on every existing browser e2e or API test the diff touched. The question is always the same: does the spec ask for the old behaviour to change? If it does, the test update is right. If it does not, the old test was either wrong (the axis says what the spec says instead) or right, in which case the code regressed and the weakened assertion is the finding. The reason the implementer wrote in the commit message is evidence the axis reads, not a verdict it defers to.
 
 A generic review skill that does not know your standards is the thing this design is trying to avoid: it flags what is deliberate in your codebase and misses the invariants your codebase actually depends on. So the repo's own documentation is the [primary source](https://www.aihero.dev/ai-coding-dictionary/primary-source) on the Standards axis, and **the repo always overrides**.
 
@@ -65,7 +71,7 @@ Both work, and the skill does not decide for you. Per-ticket keeps each diff sma
 
 **Can I trust the findings?**
 
-Not without checking. Sub-agent output is a hypothesis, not evidence: one team reported a dozen breaking changes that prose-based reviews had waved through. The skill aggregates the two reports verbatim or lightly cleaned rather than re-verifying each claim against the files, so a finding can cite the wrong location or overstate an impact. Read the citation on each finding before acting on it. That every finding is required to carry one (a standards rule, a smell plus its hunk, or a spec line) is what makes this checkable at all.
+Not without checking. Sub-agent output is a hypothesis, not evidence: one team reported a dozen breaking changes that prose-based reviews had waved through. The skill aggregates the reports verbatim or lightly cleaned rather than re-verifying each claim against the files, so a finding can cite the wrong location or overstate an impact. Read the citation on each finding before acting on it. That every finding is required to carry one (a standards rule, a smell plus its hunk, or a spec line) is what makes this checkable at all.
 
 **Why does it find new problems every single time I run it?**
 
@@ -78,8 +84,8 @@ No. It diffs `<fixed-point>...HEAD`, three-dot, which is measured from the merge
 ## It's working if
 
 - It refuses to start on a bad ref or an empty diff, before any sub-agent is spawned.
-- The report arrives as two separate blocks under `## Standards` and `## Spec`, not one merged list.
-- Every Standards finding names either a rule in one of your repo's files or one of the twelve smells, with the hunk quoted; every Spec finding quotes a line of the spec.
+- The report arrives as three separate blocks under `## Standards`, `## Spec` and `## Tests`, not one merged list.
+- Every Standards finding names either a rule in one of your repo's files or one of the twelve smells, with the hunk quoted; every Spec finding quotes a line of the spec; every Tests finding names the row of the table.
 - The closing summary gives a worst issue per axis and declines to pick an overall winner.
 - With no spec available, the Spec block says so instead of listing requirements it inferred from the code.
 
