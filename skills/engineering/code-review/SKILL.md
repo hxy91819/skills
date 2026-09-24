@@ -60,7 +60,11 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 
 ### 4. Dispatch the review agents through BB
 
-Use `$bb-model-routing` to dispatch one independent task for each available axis in parallel. Pass `--difficulty medium` to `bb-dispatch` for **every** review agent, including the Tests axis; this review's difficulty is fixed, regardless of the routing skill's general difficulty guidance. Put the diff command, commits, source material and the relevant brief below in each task. Include this instruction in every review task: "You are the final reviewer for this axis. Perform the review yourself and return your findings. Do not invoke `/code-review` or `$bb-model-routing`, and do not delegate, dispatch, or spawn another agent." Follow the routing skill's notification and failure handling to collect every completed report before aggregating. If the Spec source is missing, dispatch only Standards and Tests.
+Use `$bb-model-routing` to dispatch one independent task for each available axis in parallel. Pass `--difficulty medium` for the Spec axis and `--difficulty simple` for Standards and Tests, which check the diff against a list; these difficulties are fixed, regardless of the routing skill's general difficulty guidance. Put the diff command, commits, source material and the relevant brief below in each task. Include this instruction in every review task: "You are the final reviewer for this axis. Perform the review yourself and return your findings. Do not invoke `/code-review` or `$bb-model-routing`, and do not delegate, dispatch, or spawn another agent. Report against what the spec and the repo's documents actually say; do not add requirements or raise the bar beyond them." If the Spec source is missing, dispatch only Standards and Tests.
+
+Collect reports through the routing skill's notifications. If an axis fails for provider reasons, re-dispatch it once through the routing skill's fallback; if that fails too, mark the axis "not run" and aggregate the rest instead of waiting.
+
+The review runs once per change. Fixes made in response to its findings are verified by rerunning the affected tests, not by another review.
 
 **Standards sub-agent prompt** should include:
 
@@ -72,7 +76,7 @@ Use `$bb-model-routing` to dispatch one independent task for each available axis
 
 - The diff command and commit list.
 - The path or fetched contents of the spec.
-- The brief: "Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but where the implementation looks wrong. Quote the spec line for each finding. Under 400 words."
+- The brief: "Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but where the implementation looks wrong. Quote the spec line for each finding; anything you can't tie to a spec line goes under a separate 'Suggestions' heading and is not a gap. Under 400 words."
 
 If the spec is missing, skip the Spec sub-agent and note this in the final report.
 
@@ -87,6 +91,8 @@ If the spec is missing, skip the Spec sub-agent and note this in the final repor
 Present the three reports under `## Standards`, `## Spec` and `## Tests` headings, verbatim or lightly cleaned. Do **not** merge or rerank findings, because the axes are deliberately separate (see _Why three axes_).
 
 End with a one-line summary: total findings per axis, and the worst issue _within each axis_ (if any). Don't pick a single winner across axes: that's the reranking the separation exists to prevent.
+
+Mark each finding **blocking** or **non-blocking**. Blocking means: a spec requirement missing or wrong with its spec line quoted, a declared test missing or below its boundary, an existing browser e2e or API test weakened, or a hard violation of a documented repo standard. Smells, suggestions and anything without a quoted source are non-blocking: record them for the MR description, don't fix them in this change.
 
 ## Why three axes
 
