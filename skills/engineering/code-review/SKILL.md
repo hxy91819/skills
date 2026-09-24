@@ -9,7 +9,7 @@ Three-axis review of the diff between `HEAD` and a fixed point the user supplies
 - **Spec**: does the code faithfully implement the originating issue / spec?
 - **Tests**: does every row of the spec's regression contract (its Testing Decisions table) have a test at the declared boundary, and were existing browser e2e or API tests changed?
 
-All three axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
+Each available axis runs in its own parallel BB review thread so the axes don't pollute each other's context, then this skill aggregates their findings. The process below belongs to the coordinating agent only: load `$bb-model-routing` by skill name to dispatch and collect these threads. An agent assigned an axis completes that review directly and returns its report; it does not run this process or dispatch another agent.
 
 The issue tracker should have been provided to you. If `docs/agents/issue-tracker.md` is missing, tell the user to run `/setup-matt-pocock-skills`.
 
@@ -58,7 +58,9 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 - **Middle Man**: a class or function that mostly just delegates onward. → cut it, call the real target direct.
 - **Refused Bequest**: a subclass or implementer that ignores or overrides most of what it inherits. → drop the inheritance, use composition.
 
-### 4. Spawn all three sub-agents in parallel
+### 4. Dispatch the review agents through BB
+
+Use `$bb-model-routing` to dispatch one independent task for each available axis in parallel. Pass `--difficulty medium` to `bb-dispatch` for **every** review agent, including the Tests axis; this review's difficulty is fixed, regardless of the routing skill's general difficulty guidance. Put the diff command, commits, source material and the relevant brief below in each task. Include this instruction in every review task: "You are the final reviewer for this axis. Perform the review yourself and return your findings. Do not invoke `/code-review` or `$bb-model-routing`, and do not delegate, dispatch, or spawn another agent." Follow the routing skill's notification and failure handling to collect every completed report before aggregating. If the Spec source is missing, dispatch only Standards and Tests.
 
 **Standards sub-agent prompt** should include:
 

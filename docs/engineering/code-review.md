@@ -1,6 +1,6 @@
 ## What it does
 
-`code-review` reviews the diff between `HEAD` and a fixed point you name (a commit, a branch, a tag, `main`, `HEAD~5`) along three axes. **Standards** asks whether the code follows how this repo writes code. **Spec** asks whether the code does what the originating issue or [spec](https://www.aihero.dev/ai-coding-dictionary/spec) asked for. **Tests** asks whether every row of the spec's regression contract (the Testing Decisions table) has a test at the boundary it declared, and whether the diff touched existing browser e2e or API tests. Each axis runs in its own [sub-agent](https://www.aihero.dev/ai-coding-dictionary/subagent) so none sees another's reasoning.
+`code-review` reviews the diff between `HEAD` and a fixed point you name (a commit, a branch, a tag, `main`, `HEAD~5`) along three axes. **Standards** asks whether the code follows how this repo writes code. **Spec** asks whether the code does what the originating issue or [spec](https://www.aihero.dev/ai-coding-dictionary/spec) asked for. **Tests** asks whether every row of the spec's regression contract (the Testing Decisions table) has a test at the boundary it declared, and whether the diff touched existing browser e2e or API tests. Each axis runs in its own [sub-agent](https://www.aihero.dev/ai-coding-dictionary/subagent), dispatched through BB at medium difficulty, so none sees another's reasoning.
 
 The axes are never merged and never re-ranked. The report ends with a worst issue *per axis* and refuses to name a single winner across them, because a change can pass one axis and fail another: code that follows every convention while implementing the wrong thing passes Standards and fails Spec; code that does exactly what the [ticket](https://www.aihero.dev/ai-coding-dictionary/ticket) asked while breaking the repo's conventions does the reverse; code that does the right thing with a pile of unit tests and nothing that would catch the feature regressing passes Spec and fails Tests. A blended verdict lets the passing axis hide the failing one.
 
@@ -20,6 +20,8 @@ Type `/code-review`, or the agent reaches for it automatically when you ask to r
 You must supply the fixed point. If you do not, the skill asks for one rather than guessing; it then checks the ref resolves and the diff is non-empty before spawning anything, so a typo'd branch name fails in front of you instead of inside two sub-agents.
 
 ## Prerequisites
+
+BB and the `bb-model-routing` skill must be available to dispatch the review agents. Each axis uses the configured medium difficulty route.
 
 The Standards axis needs nothing. It reads whatever the repo documents (`CODING_STANDARDS.md`, `CONTRIBUTING.md`, and the like) and falls back on a built-in baseline when the repo documents nothing.
 
@@ -53,9 +55,9 @@ The **smell baseline** is the floor underneath it, twelve Fowler code smells fro
 
 This is the most reported problem with the skill, and it is not fixed. Claude Code ships its own `/code-review`, which does something different: it hunts bugs in the diff, where this one checks spec compliance and repo standards. Installing this library means one of them wins, and which one wins depends on how you installed. Via the plugin marketplace, everything is aliased under a `mattpocock-skills:` prefix and the built-in becomes hard to reach at the unqualified name; via a plain skills install, the local file wins and this skill shadows the built-in. One clean answer is to remove Claude Code's built-in skills entirely: a large [context](https://www.aihero.dev/ai-coding-dictionary/context) saving, and the collision stops mattering. The shadowing itself is arguably a Claude Code [harness](https://www.aihero.dev/ai-coding-dictionary/harness) bug (a skill author should be free to name a skill anything), so the other answer is to rename the local copy. Editing the frontmatter or renaming the directory gets undone by `npx skills update`; the durable workaround reported by users is to fork the skill to a new name and drop `code-review` from the managed set, keeping a note of the commit you forked from so you can re-sync by hand.
 
-**Its sub-agents keep invoking `/code-review` again and spawn more agents.**
+**Can a review agent start another review agent?**
 
-Known open bug, reproduced by several people and in more than one harness. The Standards and Spec prompts do not forbid delegation, so a sub-agent can rediscover the skill and fan out again: one report reached 50-plus agents. The fix people have applied on forks is one line appended to both sub-agent briefs: "Do not invoke `/code-review` or spawn additional agents: perform this review directly." Some prefer to handle it at the harness level so every skill inherits the guard. Neither is in the shipped skill yet. If you run this unattended, watch the agent count.
+No. The coordinating agent dispatches one BB thread per available axis. Each review task tells its agent to complete that axis directly and return a report without invoking `code-review`, using `bb-model-routing`, or creating another agent. The skill also states this boundary for agents that load it while already assigned an axis. Earlier prompts omitted the boundary, allowing a review agent to mistake the coordinator's dispatch step for its own work.
 
 **Should I run it in the same [session](https://www.aihero.dev/ai-coding-dictionary/session) that wrote the code?**
 
@@ -80,6 +82,7 @@ No. It diffs `<fixed-point>...HEAD`, three-dot, which is measured from the merge
 ## It's working if
 
 - It refuses to start on a bad ref or an empty diff, before any sub-agent is spawned.
+- Each available axis runs in its own BB thread with medium difficulty.
 - The report arrives as three separate blocks under `## Standards`, `## Spec` and `## Tests`, not one merged list.
 - Every Standards finding names either a rule in one of your repo's files or one of the twelve smells, with the hunk quoted; every Spec finding quotes a line of the spec; every Tests finding names the row of the table.
 - The closing summary gives a worst issue per axis and declines to pick an overall winner.
