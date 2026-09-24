@@ -1,6 +1,6 @@
 ## What it does
 
-`code-review` reviews the diff between `HEAD` and a fixed point you name (a commit, a branch, a tag, `main`, `HEAD~5`) along three axes. **Standards** asks whether the code follows how this repo writes code. **Spec** asks whether the code does what the originating issue or [spec](https://www.aihero.dev/ai-coding-dictionary/spec) asked for. **Tests** asks whether every row of the spec's regression contract (the Testing Decisions table) has a test at the boundary it declared, and whether the diff touched existing browser e2e or API tests. Each axis runs in its own [sub-agent](https://www.aihero.dev/ai-coding-dictionary/subagent), dispatched through BB (Spec at medium difficulty, Standards and Tests at simple), so none sees another's reasoning. It runs once per change, marks each finding blocking or non-blocking, and treats anything it can't tie to a spec line or a documented standard as a suggestion rather than a gap.
+`code-review` reviews the diff between `HEAD` and a fixed point you name (a commit, a branch, a tag, `main`, `HEAD~5`) along three axes. **Standards** asks whether the code follows how this repo writes code. **Spec** asks whether the code does what the originating issue or [spec](https://www.aihero.dev/ai-coding-dictionary/spec) asked for. **Tests** asks whether every row of the spec's regression contract (the Testing Decisions table) has a test at the boundary it declared, and whether the diff touched existing browser e2e or API tests. Each axis runs in its own [sub-agent](https://www.aihero.dev/ai-coding-dictionary/subagent), dispatched through BB at simple difficulty, so none sees another's reasoning. It runs once per change, marks each finding blocking or non-blocking, and treats anything it can't tie to a spec line or a documented standard as a suggestion rather than a gap.
 
 The axes are never merged and never re-ranked. The report ends with a worst issue *per axis* and refuses to name a single winner across them, because a change can pass one axis and fail another: code that follows every convention while implementing the wrong thing passes Standards and fails Spec; code that does exactly what the [ticket](https://www.aihero.dev/ai-coding-dictionary/ticket) asked while breaking the repo's conventions does the reverse; code that does the right thing with a pile of unit tests and nothing that would catch the feature regressing passes Spec and fails Tests. A blended verdict lets the passing axis hide the failing one.
 
@@ -21,7 +21,7 @@ You must supply the fixed point. If you do not, the skill asks for one rather th
 
 ## Prerequisites
 
-BB and the `bb-model-routing` skill must be available to dispatch the review agents. Spec uses the configured medium difficulty route; Standards and Tests use simple.
+BB and the `bb-model-routing` skill must be available to dispatch the review agents. Every axis uses the configured simple difficulty route.
 
 The Standards axis needs nothing. It reads whatever the repo documents (`CODING_STANDARDS.md`, `CONTRIBUTING.md`, and the like) and falls back on a built-in baseline when the repo documents nothing.
 
@@ -82,7 +82,7 @@ No. It diffs `<fixed-point>...HEAD`, three-dot, which is measured from the merge
 ## It's working if
 
 - It refuses to start on a bad ref or an empty diff, before any sub-agent is spawned.
-- Each available axis runs in its own BB thread: Spec at medium difficulty, Standards and Tests at simple.
+- Each available axis runs in its own BB thread at simple difficulty.
 - An axis that fails for provider reasons is retried once, then reported as "not run" while the other axes are aggregated.
 - Every finding is marked blocking or non-blocking, and nothing without a quoted spec line or documented standard is blocking.
 - The report arrives as three separate blocks under `## Standards`, `## Spec` and `## Tests`, not one merged list.
