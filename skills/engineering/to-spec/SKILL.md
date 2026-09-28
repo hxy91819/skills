@@ -22,6 +22,8 @@ Check with the user that these test boundaries match their expectations.
 
 3. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
 
+Keep the bar where the user set it. Audit trails, evidence chains, reconciliation, replay protection, extra approval steps and similar verification requirements go into the spec only when the user asked for them; when you include one, quote the user's words beside it. Every story, decision and test row downstream is built and checked to what the spec says, so a requirement added here costs the whole chain.
+
 <spec-template>
 
 ## Problem Statement
@@ -34,7 +36,7 @@ The solution to the problem, from the user's perspective.
 
 ## User Stories
 
-A LONG, numbered list of user stories. Each user story should be in the format of:
+A numbered list of user stories covering the behaviour the user asked for. Each user story should be in the format of:
 
 1. As an <actor>, I want a <feature>, so that <benefit>
 
@@ -42,7 +44,7 @@ A LONG, numbered list of user stories. Each user story should be in the format o
 1. As a mobile bank customer, I want to see balance on my accounts, so that I can make better informed decisions about my spending
 </user-story-example>
 
-This list of user stories should be extremely extensive and cover all aspects of the feature.
+Cover the core paths the user described, written so the first version runs and its result can be observed. Don't pad the list with edge cases, hardening or failure handling nobody raised; those become stories when the user asks for them or a real run shows they matter.
 
 ## Implementation Decisions
 
