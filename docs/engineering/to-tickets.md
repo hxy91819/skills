@@ -39,7 +39,9 @@ The edges are the point of the artifact. They read two ways depending on the tra
 | Local markdown | Text in one file per ticket under `.scratch/<feature>/issues/<NN>-<slug>.md`, numbered blockers-first | Top to bottom, by hand |
 | A real tracker (GitHub, Linear) | Native blocking links, or sub-issues where the tracker has them | Any ticket whose blockers are done is on the **frontier** and can be grabbed |
 
-The edges live in the ticket either way. The medium only decides whether anything can act on them in parallel. `to-tickets` produces the artifact; running it (one session at a time, or a fleet) is your job, not the skill's.
+The edges live in the ticket either way. The medium only decides whether anything can act on them in parallel.
+
+An edge means "start once the blocker has merged to the trunk", not "build on the blocker's branch". Every ticket branches from the trunk and merges on its own, so there is no stack of unmerged branches to rebase and retarget each time the one below lands. The wide-refactor integration branch below is the one exception. `to-tickets` produces the artifact; running it (one session at a time, or a fleet) is your job, not the skill's.
 
 ## The wide-refactor exception
 
@@ -77,7 +79,7 @@ A very large spec can outgrow what a tracker issue serves back cleanly, and ther
 The template asks for criteria and says nothing about whether they can fail, so this happens. Three shapes recur: a criterion already true at the base commit, a criterion that can only be satisfied by work another ticket owns, and one that restates the request rather than deriving from the artifact. Vertical slicing prevents most of it (a slice that delivers behaviour which didn't exist before is red at the base commit by construction), but the check is worth doing by hand. For each criterion, name the observation that would show it false, and confirm it fails at the commit the implementer starts from.
 
 **The tickets are published. How do I actually run them?**
-The skill stops at the artifact, and there is no auto-dispatch mode. Dispatch is manual: look at the board, count the tickets with no open blockers, and open that many agent sessions. One ticket per fresh context, cleared between them. Be aware that [implement](https://aihero.dev/skills-implement) does not reliably close or check off the ticket when it finishes, on GitHub or in local markdown, so the ticket's state is yours to update.
+The skill stops at the artifact, and there is no auto-dispatch mode. Dispatch is manual: look at the board, count the tickets with no open blockers, and open that many agent sessions. One ticket per fresh context, cleared between them. [implement](https://aihero.dev/skills-implement) closes each ticket with a one-line result once its change has landed, so the frontier moves on its own.
 
 ## It's working if
 

@@ -30,13 +30,15 @@ If the tickets came from [to-tickets](https://aihero.dev/skills-to-tickets), the
 
 ## What one run does
 
-A run is five beats, in order:
+A run is seven beats, in order:
 
 1. Read the ticket or spec and work out the test boundaries.
 2. Drive [tdd](https://aihero.dev/skills-tdd) at the pre-agreed test boundaries, one red-green slice at a time.
 3. Typecheck often, run single test files as it goes.
 4. Run the full test suite once, at the end.
 5. Commit to the current branch, then review at the tier the change's risk calls for (skip, self, or full [code-review](https://aihero.dev/skills-code-review)). Review runs once; only blocking findings are fixed.
+6. Deliver the way the repo's `AGENTS.md` says, using the repo's own tools for its code host, then leave a one-line result on the ticket and close it.
+7. Report: three opening lines (outcome, what you need to decide, next step), then short details.
 
 One run covers one ticket. The tickets [to-tickets](https://aihero.dev/skills-to-tickets) produces are tracer-bullet vertical slices sized to fit a single fresh [context window](https://www.aihero.dev/ai-coding-dictionary/context-window), so the intended rhythm is: clear context, implement one ticket, commit, clear again. Each ticket is self-contained, which is what makes the previous ticket's context disposable.
 
@@ -50,9 +52,13 @@ The spec's Testing Decisions table is also the run's completion list. A story wh
 
 ## Common questions
 
-**It finished, but my ticket is still open and the acceptance criteria are still unchecked.**
+**It finished, but my ticket is still open.**
 
-Correct, and expected. `implement` has no completion step. It ends at the commit and never touches the work item, confirmed on GitHub Issues and on the local markdown tracker, so it is not a tracker integration problem. It also does not act on the findings `code-review` produced, and does not tick the `- [ ]` boxes on the originating issue. Close the ticket and reconcile the criteria yourself. This bites hardest on a dependency chain, because `to-tickets` defines the frontier as tickets whose blockers are all closed. If nothing gets closed, nothing ever becomes visibly unblocked.
+It closes the ticket only after the change has landed: merged, or pushed where the repo pushes directly. If the merge request is still waiting on CI or a human merge, the ticket stays open until then. If delivery was blocked (a missing tool, credential or entry point), the report names what is missing and the ticket stays open on purpose.
+
+**It stopped and said a capability is missing instead of building it.**
+
+That is intended. When the spec relies on something that doesn't exist yet, designing a stand-in subsystem is a new decision, so the skill reports it as blocked rather than inventing one inside a ticket.
 
 **Can I point it at all my tickets at once, or run several in parallel?**
 
@@ -60,7 +66,7 @@ No. One invocation, one ticket. Batch dispatch across a ticket queue and [subage
 
 **Can it open a pull request instead of committing?**
 
-Not built in. It commits straight to the current branch, which several people find too eager: the code lands before they have had a chance to verify it works. There is no configuration flag and no PR mode. People override it in the invocation ("commit to a branch and open a PR") or by editing their local copy of the skill.
+It follows the repo. It commits on the current branch, then delivers the way the repo's `AGENTS.md` documents: a merge request, a direct push, or whatever the repo uses, with the repo's own tools for its code host. Document the convention in `AGENTS.md` and it will use it.
 
 **`code-review` says it cannot see my changes.**
 
@@ -82,6 +88,8 @@ Probably the ticket is too big rather than the skill being misused. A run does c
 - You can see an actual `/tdd` invocation in the trace, not just tests appearing in the diff.
 - Typechecks and single test files run repeatedly during the run, and the full suite runs once near the end.
 - The run reaches a commit on your current branch without you prompting it to carry on.
+- It delivers through the repo's documented route and closes the ticket once the change has landed.
+- The final report opens with the outcome, what you need to decide, and the next step.
 - The diff is one ticket's worth of change: a vertical slice through every layer, not several tickets swept together.
 
 ## Where it fits
@@ -92,7 +100,7 @@ Probably the ticket is too big rather than the skill being misused. A run does c
 grill-with-docs → to-spec → to-tickets → implement → code-review
 ```
 
-Its neighbours are [to-tickets](https://aihero.dev/skills-to-tickets), which produces the tickets it consumes and declares the blocking edges that decide their order; [tdd](https://aihero.dev/skills-tdd), which it drives internally at each test boundary; and [code-review](https://aihero.dev/skills-code-review), which it runs before committing. It sits downstream of the planning skills and trusts them. It does not re-validate the shape of what it was handed, so a badly-structured map or a horizontally-layered ticket gets built as written.
+Its neighbours are [to-tickets](https://aihero.dev/skills-to-tickets), which produces the tickets it consumes and declares the blocking edges that decide their order; [tdd](https://aihero.dev/skills-tdd), which it drives internally at each test boundary; and [code-review](https://aihero.dev/skills-code-review), which it runs after committing when the change is risky enough to need it. It sits downstream of the planning skills and trusts them. It does not re-validate the shape of what it was handed, so a badly-structured map or a horizontally-layered ticket gets built as written.
 
 That trust is why [wayfinder](https://aihero.dev/skills-wayfinder) merges onto the chain at [to-spec](https://aihero.dev/skills-to-spec) rather than looping its map straight into `implement`. Go straight to `implement` from a map only when the effort turned out genuinely small.
 

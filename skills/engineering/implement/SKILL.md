@@ -35,3 +35,15 @@ Review once. After fixing findings, rerun the affected tests and don't review ag
 Fix only blocking findings in this change: a spec requirement missing or wrong, with the spec line quoted; a declared test missing or below its boundary; an existing browser e2e or API test weakened; a hard violation of a documented repo standard. List everything else (smells, suggestions, anything without a spec line) in the commit or MR description instead of fixing it.
 
 Review doesn't hold up delivery. Push and open the MR as you normally would and let review run alongside CI. If a review axis can't run for provider reasons, say so and deliver without it.
+
+## Deliver
+
+Deliver the way the repo's `AGENTS.md` says (a merge request, a direct push, or whatever it documents), using the tools and skills the repo provides for its code host. When a tool, credential or entry point you need is missing, report the work as blocked and name exactly what is missing; don't improvise a different route.
+
+When the spec relies on a capability that doesn't exist yet, report that as blocked too. Don't design a new subsystem to stand in for it; that is a new decision for the user, not part of this ticket.
+
+Once the change has landed (merged, or pushed where the repo pushes directly), leave a one-line result on the ticket and close it, so tickets blocked by it become visibly ready.
+
+## Report
+
+Open the final report with three lines: the outcome, what the user needs to decide (or "nothing"), and the next step. Use plain words and the project's own terms, not shorthand you coined during the run. Details (changed files, tests, links) follow; keep the whole report short, roughly 400 words at most.
