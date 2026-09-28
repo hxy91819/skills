@@ -4,6 +4,8 @@
 
 It does not interview you. By the time you reach for it the deciding is already done, so it synthesises what is known (from the thread, from the codebase, from your `GLOSSARY.md` and ADRs) rather than opening a fresh round of questions. The spec is a record of decisions already made, not a place where new ones get made.
 
+It also keeps the bar where you set it. User stories cover the core paths you described, enough for a first version that runs and can be observed, rather than every edge case. Verification requirements such as audit trails, reconciliation, replay protection or extra approval steps only go in when you asked for them, and the spec quotes your words next to each one, because everything downstream is built and checked to what the spec says.
+
 ## When to reach for it
 
 You invoke this by typing `/to-spec`; the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) won't reach for it on its own.
