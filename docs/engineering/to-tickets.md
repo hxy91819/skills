@@ -39,9 +39,7 @@ The edges are the point of the artifact. They read two ways depending on the tra
 | Local markdown | Text in one file per ticket under `.scratch/<feature>/issues/<NN>-<slug>.md`, numbered blockers-first | Top to bottom, by hand |
 | A real tracker (GitHub, Linear) | Native blocking links, or sub-issues where the tracker has them | Any ticket whose blockers are done is on the **frontier** and can be grabbed |
 
-The edges live in the ticket either way. The medium only decides whether anything can act on them in parallel.
-
-An edge means "start once the blocker has merged to the target branch", not "build on the blocker's branch". The target branch is the trunk, or the spec's integration branch when [implement-spec](https://aihero.dev/skills-implement-spec) runs the tickets. Every ticket branches from the target branch and merges on its own, so there is no stack of unmerged branches to rebase and retarget each time the one below lands. The wide-refactor integration branch below is the one exception. `to-tickets` produces the artifact; running it (one session at a time, or a fleet) is your job, not the skill's.
+The edges live in the ticket either way. The medium only decides whether anything can act on them in parallel. `to-tickets` produces the artifact; running it (one session at a time, or a fleet) is your job, not the skill's.
 
 ## The wide-refactor exception
 
