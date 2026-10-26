@@ -21,7 +21,7 @@ A **test boundary**（测试边界）is the public boundary you test at: the int
 
 **Test only at pre-agreed test boundaries.** Before writing any test, write down the test boundaries under test and confirm them with the user; a spec's Testing Decisions table counts as that confirmation. No test is written at an unconfirmed test boundary. You can't test everything, so agreeing the test boundaries up front is how testing effort lands on the critical paths and complex logic instead of every edge case.
 
-Ask: "What's the public interface, and which test boundaries should we test?"
+Ask: "What's the public interface, and which test boundaries should we test?" Give each proposed test boundary a one-line note on what it catches and what it misses.
 
 When the shape of that interface is itself in question (how deep the module is, where the swap point belongs, what the interface should expose), call the Skill tool with "codebase-design" for the vocabulary. It is the shared source of the module, interface, depth, swap point, adapter, leverage and locality terms, and it is a reference to consult, not a session to run.
 

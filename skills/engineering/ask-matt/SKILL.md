@@ -10,6 +10,8 @@ triggers:
 
 You don't remember every skill, so ask.
 
+Before stating what a skill does or recommending a step be skipped, read that skill's SKILL.md: the summaries here are for orientation only.
+
 A **flow** is a path through the skills. Most paths run along one **main flow**, and two **on-ramps** merge onto it. Everything else is standalone, or a vocabulary layer that runs underneath.
 
 ## The main flow: idea → ship
@@ -90,6 +92,7 @@ Off the main flow entirely.
 - **`/wizard`** is for the steps only a **human** can take: provisioning infrastructure, setting up credentials or CI secrets, clicking through an unfamiliar third-party dashboard, running a one-off migration or cutover. It generates an interactive bash script that opens each URL, captures each value, and writes it into `.env` and GitHub secrets, so the procedure stops being something you re-explain to an agent every time. Model-invoked, so the agent reaches for it the moment it hits a wall only you can pass. If the agent could just do it itself, it should; this is for where a human is genuinely in the loop.
 - **`/wait-what`** is the corrective for a message that didn't land. Use it mid-conversation, inside any other skill, and the agent re-pitches what it just said with the context you were missing, in plain English, using the `GLOSSARY.md` vocabulary. It works after the fact; `/grill-with-docs` is the upfront cure, because a shared language agreed early is what stops the jargon arriving at all.
 - **`/teach`**: learn a concept over multiple sessions, using the current directory as a stateful workspace.
+- **`/chief-of-staff`** (beta, `in-progress/`, installed separately): pursue a long-running goal in one session through background subagents, schedules and a dated wiki. Use it for sustained coordination rather than a single ticket or a decision map; it is outside the promoted plugin set.
 - **`/writing-for-agents`** is the reference for writing documents agents consume: skills, AGENTS.md, pointed-at docs.
 
 ## Precondition

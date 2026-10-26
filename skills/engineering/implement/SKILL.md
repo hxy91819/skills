@@ -8,7 +8,9 @@ triggers:
 
 Implement the work described by the user in the spec or tickets.
 
-Use /tdd where possible, at pre-agreed test boundaries.
+If the user passes a ticket reference, fetch it from the issue tracker and state its title before starting. If the reference is ambiguous, ask.
+
+Call the Skill tool with "tdd" where possible, at pre-agreed test boundaries.
 
 The spec's Testing Decisions table (or the ticket's test criteria) is the completion list: a story is done when the test at its declared boundary exists and passes. Never substitute a lower boundary for a `browser e2e` or `api` row. Unit tests are yours to add or skip.
 
@@ -28,7 +30,7 @@ Pick the tier from the change's risk. File count, test count and ticket length d
 | --- | --- | --- |
 | Skip | Only docs, config or tests changed; a CI or flaky-test fix; a small fix inside one module that touches no schema, migration, permission or credential | None. Tests and CI are the gate. |
 | Self | Ordinary feature work inside one module | Reread the diff yourself against the spec lines and the completion list. No sub-agents. |
-| Full | Cross-module change; schema or migration; permissions or credentials; a core state machine | Run /code-review against the commit you branched from. |
+| Full | Cross-module change; schema or migration; permissions or credentials; a core state machine | Call the Skill tool with "code-review" against the commit you branched from. |
 
 Review once. After fixing findings, rerun the affected tests and don't review again.
 

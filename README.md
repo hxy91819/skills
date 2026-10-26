@@ -24,7 +24,7 @@ If you want to keep up with changes to these skills, and any new ones I create, 
 
 ## Installation (30-second setup)
 
-Two ways in, two philosophies. **The [Claude Code plugin](https://code.claude.com/docs/en/plugins)** installs the whole set as a managed, read-only bundle that updates when I ship, so you subscribe rather than fork. **[skills.sh](https://skills.sh/mattpocock/skills)** copies editable skill files into your project, so you can hack on them and make them your own. Pick one: installing both leaves you with every skill twice.
+A plugin updates itself. [skills.sh](https://skills.sh/mattpocock/skills) copies editable files into your project, and you update them by hand. Pick one per agent, because installing both gives you every skill twice.
 
 ### 1. Get the skills
 
@@ -32,42 +32,67 @@ Two ways in, two philosophies. **The [Claude Code plugin](https://code.claude.co
 <summary><strong>Claude Code</strong></summary>
 
 ```bash
-claude plugins install mattpocock-skills
+claude plugin install mattpocock-skills@claude-plugins-official
 ```
 
-Or, from inside a session:
-
-```
-/plugin install mattpocock-skills
-```
-
-It's in Claude Code's official marketplace, so there's nothing to add first, and updates arrive automatically.
+Updates itself by default.
 
 </details>
 
 <details>
-<summary><strong>Codex, and other agents</strong></summary>
+<summary><strong>Codex</strong></summary>
 
 ```bash
-npx skills@latest add mattpocock/skills
+codex plugin marketplace add mattpocock/skills
+codex plugin add mattpocock-skills@mattpocock
 ```
 
-Pick the skills you want, and which coding agents to install them on. **The installer lets you choose which skills to take, so make sure `setup-matt-pocock-skills` is one of them.**
-
-A native Codex plugin is on the roadmap (see [`.agents/adr/0002-ship-as-a-claude-code-plugin.md`](./.agents/adr/0002-ship-as-a-claude-code-plugin.md)).
+Updates itself at startup.
 
 </details>
 
 <details>
-<summary><strong>For tinkerers</strong></summary>
-
-Use the same installer, on any agent, including Claude Code:
+<summary><strong>GitHub Copilot</strong> (CLI and VS Code)</summary>
 
 ```bash
-npx skills@latest add mattpocock/skills
+copilot plugin marketplace add mattpocock/skills
+copilot plugin install mattpocock-skills@mattpocock
 ```
 
-It writes the skills into your repo as ordinary files you own and can edit. Nothing updates behind your back; pull my latest changes when you want them with `npx skills update`.
+Then, once, add to `~/.copilot/settings.json`:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "mattpocock": { "source": { "source": "github", "repo": "mattpocock/skills" }, "autoUpdate": true }
+  }
+}
+```
+
+In VS Code, run **Chat: Install Plugin From Source** and enter `https://github.com/mattpocock/skills`. It updates daily.
+
+</details>
+
+<details>
+<summary><strong>Gemini CLI</strong> (manual updates)</summary>
+
+```bash
+gemini skills install https://github.com/mattpocock/skills.git --path skills/engineering
+gemini skills install https://github.com/mattpocock/skills.git --path skills/productivity
+```
+
+Re-run both commands to update.
+
+</details>
+
+<details>
+<summary><strong>Any other agent, or editable files</strong> (manual updates)</summary>
+
+```bash
+npx skills@latest add mattpocock/skills -a <agent>  # cursor, opencode, devin, windsurf, amp, pi; omit -a to choose
+```
+
+When the installer asks which skills to take, include `setup-matt-pocock-skills`. To update, run `npx skills@latest update`, and re-run `add` to pick up new skills.
 
 </details>
 
@@ -75,7 +100,7 @@ It writes the skills into your repo as ordinary files you own and can edit. Noth
 
 In your agent, run it once per repo. It will:
 
-- Ask you which issue tracker you want to use (GitHub, Linear, or local files)
+- Ask you which issue tracker you want to use (GitHub, GitLab, local files, or anything else you describe)
 - Ask you what labels you apply to tickets when you triage them (`/triage` uses labels)
 - Ask you where you want to save any docs we create
 
@@ -151,9 +176,9 @@ It's time to look at your feedback loops. Without feedback on how the code it pr
 
 **The Fix**: You need the usual tranche of feedback loops: static types, browser access, and automated tests.
 
-For automated tests, a red-green-refactor loop is critical. This is where the agent writes a failing test first, then fixes the test. This helps give the agent a consistent level of feedback that results in far better code.
+For automated tests, a red-green loop is critical. This is where the agent writes a failing test first, then implements enough code to pass it. Refactoring belongs to the review stage. This helps give the agent a consistent level of feedback that results in far better code.
 
-I've built a **[`/tdd`](./skills/engineering/tdd/SKILL.md) skill** you can slot into any project. It encourages red-green-refactor and gives the agent plenty of guidance on what makes good and bad tests.
+I've built a **[`/tdd`](./skills/engineering/tdd/SKILL.md) skill** you can slot into any project. It encourages red-green and gives the agent plenty of guidance on what makes good and bad tests.
 
 For debugging, I've also built a **[`/diagnosing-bugs`](./skills/engineering/diagnosing-bugs/SKILL.md)** skill that wraps best debugging practices into a disciplined loop, gated phase by phase.
 
@@ -198,7 +223,7 @@ Skills I use daily for code work.
 - **[setup-matt-pocock-skills](./skills/engineering/setup-matt-pocock-skills/SKILL.md)**: Configure this repo for the engineering skills (issue tracker, triage labels, domain doc layout). Run once per repo before using the other engineering skills.
 - **[to-spec](./skills/engineering/to-spec/SKILL.md)**: Turn the current conversation into a spec and publish it to the issue tracker. No interview, just synthesizes what you've already discussed.
 - **[to-tickets](./skills/engineering/to-tickets/SKILL.md)**: Break any plan, spec, or conversation into a set of tracer-bullet tickets, each declaring its blocking edges, written as text in a local file, or as native blocking links on a real tracker.
-- **[implement](./skills/engineering/implement/SKILL.md)**: Build the work described by a spec or set of tickets, driving `/tdd` at pre-agreed test boundaries and closing out with `/code-review` before committing.
+- **[implement](./skills/engineering/implement/SKILL.md)**: Build the work described by a spec or set of tickets, driving `/tdd` at pre-agreed test boundaries then committing, reviewing at a tier matched to risk (Full uses `/code-review`), and delivering by project rules.
 - **[implement-spec](./skills/engineering/implement-spec/SKILL.md)**: Implement a whole spec on one integration branch. Works the tickets as a task graph, running implementer subagents across the ready frontier for maximum concurrency, then closes out with `/code-review`.
 - **[wayfinder](./skills/engineering/wayfinder/SKILL.md)**: Plan a huge chunk of work, more than one agent session can hold, as a shared map of decision tickets on the issue tracker, and resolve them one at a time until the way to the destination is clear.
 - **[retro](./skills/engineering/retro/SKILL.md)**: Suggest improvements to the coding agent's environment (navigation, automated checks, coding standards, steering files, tooling) after a session, most severe first.
@@ -208,10 +233,10 @@ Skills I use daily for code work.
 - **[prototype](./skills/engineering/prototype/SKILL.md)**: Build a throwaway prototype to answer a design question, either a single shareable HTML file for state/logic questions, or several radically different UI variations toggleable from one route.
 - **[diagnosing-bugs](./skills/engineering/diagnosing-bugs/SKILL.md)**: Disciplined diagnosis loop for hard bugs and performance regressions: build a feedback loop that goes red on this bug → minimise → hypothesise → instrument → fix → regression-test.
 - **[research](./skills/engineering/research/SKILL.md)**: Investigate a question against high-trust primary sources and capture the findings as a cited Markdown file in the repo, run as a background agent.
-- **[tdd](./skills/engineering/tdd/SKILL.md)**: Test-driven development with a red-green-refactor loop. Builds features or fixes bugs one vertical slice at a time.
+- **[tdd](./skills/engineering/tdd/SKILL.md)**: Test-driven development with a red-green loop; refactoring belongs to review. Builds features or fixes bugs one vertical slice at a time.
 - **[domain-modeling](./skills/engineering/domain-modeling/SKILL.md)**: Actively build and sharpen a project's domain model: challenge terms against the glossary, stress-test with edge-case scenarios, and update `GLOSSARY.md` and ADRs inline.
 - **[codebase-design](./skills/engineering/codebase-design/SKILL.md)**: Shared discipline and vocabulary for designing deep modules: a lot of behaviour behind a small interface, placed at a clean swap point, testable through that interface.
-- **[code-review](./skills/engineering/code-review/SKILL.md)**: Three-axis review of the diff since a fixed point: **Standards** (does it follow the repo's coding standards, plus a Fowler smell baseline?), **Spec** (does it faithfully implement the originating issue/spec?) and **Tests** (does every row of the spec's regression contract have a test at its declared boundary?), run as parallel sub-agents so none pollutes another.
+- **[code-review](./skills/engineering/code-review/SKILL.md)**: Three-axis review of the diff since a fixed point: **Standards** (does it follow the repo's coding standards, plus a Fowler smell baseline?), **Spec** (does it faithfully implement the originating issue/spec?) and **Tests** (does every row of the spec's regression contract have a test at its declared boundary?), dispatched through BB as parallel review threads so none pollutes another.
 - **[pr](./skills/engineering/pr/SKILL.md)**: The shape a pull request body should take: a summary as the smallest visual that makes the change clear, before/after evidence that it works, and a merge-danger call (one-way or two-way door, plus blast radius).
 - **[wizard](./skills/engineering/wizard/SKILL.md)**: Generate an interactive bash wizard that walks a human through steps only they can perform: provisioning infrastructure, setting up credentials or CI secrets, walking an unfamiliar third-party dashboard, or running a one-off migration or cutover.
 
