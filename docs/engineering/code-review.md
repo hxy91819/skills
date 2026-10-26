@@ -1,6 +1,6 @@
 ## What it does
 
-`code-review` reviews the diff between `HEAD` and a fixed point you name (a commit, a branch, a tag, `main`, `HEAD~5`) along three axes. **Standards** asks whether the code follows how this repo writes code. **Spec** asks whether the code does what the originating issue or [spec](https://www.aihero.dev/ai-coding-dictionary/spec) asked for. **Tests** asks whether every story's regression contract has a test at its declared boundary and whether existing browser e2e or API tests changed. Each available axis runs in its own BB thread at simple difficulty so none sees another's reasoning.
+`code-review` reviews the diff between `HEAD` and a fixed point you name (a commit, a branch, a tag, `main`, `HEAD~5`) along three axes. **Standards** asks whether the code follows how this repo writes code. **Spec** asks whether the code does what the originating issue or [spec](https://www.aihero.dev/ai-coding-dictionary/spec) asked for. **Tests** asks whether every story's regression contract row has a test at its declared boundary that asserts observable behaviour, and whether existing tests at a declared boundary were weakened. Each available axis runs in its own BB thread at simple difficulty so none sees another's reasoning.
 
 The skill never merges or re-ranks the axes. The report ends with a worst issue *per axis* and declines to name a single winner across them. A change can pass one axis and fail another. Code that follows every convention but implements the wrong thing passes Standards and fails Spec. Code that does exactly what the [ticket](https://www.aihero.dev/ai-coding-dictionary/ticket) asked but breaks the repo's conventions does the reverse. Code that does the right thing but has no test that would catch a regression passes Spec and fails Tests. A blended verdict lets the passing axis hide the failing one.
 
@@ -34,7 +34,7 @@ The Spec axis needs a spec to exist and be findable. It looks in this order:
 
 Step 1 depends on the tracker doc, which [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) writes. Without it the axis still works if you hand it a path. With no spec at all, the skill skips the Spec sub-agent and the report says "no spec available" rather than inventing requirements.
 
-The Tests axis reads the Testing Decisions table or the tickets' test criteria. If neither exists, it derives one row per story and says so: browser e2e for changes to what a user sees or does, API for changes to a request, response or persisted side effect.
+The Tests axis reads the Testing Decisions table or the tickets' test criteria. If neither exists, it derives one row per story by the same risk rule and says so: who notices first when the story regresses, what is lost, and which layer catches it earliest and most stably. It then names the boundary at that layer (`browser e2e`, `api`, an existing lower boundary, or `none` with a reason).
 
 ## The three axes
 
@@ -42,7 +42,7 @@ The Tests axis reads the Testing Decisions table or the tickets' test criteria. 
 | --- | --- | --- | --- |
 | Question | Is it built right? | Is it the right thing? | Would a regression be caught? |
 | Reads | Repo standards and the smell baseline | The originating issue or spec | The Testing Decisions table or ticket test criteria |
-| Reports | Documented breaches and possible smells | Missing, partial, unasked-for or wrong behaviour | Missing tests, weaker boundaries, missing story assertions, changed existing e2e or API tests |
+| Reports | Documented breaches and possible smells | Missing, partial, unasked-for or wrong behaviour | Missing tests, boundaries below the declaration, missing story assertions, weakened existing tests at a declared boundary |
 | Every finding cites | A documented rule, or a named smell and its hunk | A spec line | A contract row and the hunk |
 
 This design exists to avoid a generic review skill that does not know your standards. Such a skill flags what is deliberate in your codebase and misses the invariants your codebase depends on. So the repo's own documentation is the [primary source](https://www.aihero.dev/ai-coding-dictionary/primary-source) on the Standards axis, and **the repo always overrides**.
@@ -78,7 +78,7 @@ Not without checking. Sub-agent output is a hypothesis, not evidence. One team r
 
 **Why does it find new problems every single time I run it?**
 
-Each fix adds new code to review, and the judgement-call half of the Standards axis gives different results from run to run. One reader described the loop: "/code-review and /improve-code-architecture always find new stuff every time. I implement fixes, rerun these skills, and again and again." Review runs once per change. Findings are marked blocking or non-blocking: a missing or wrong spec requirement with a quoted line, a missing or weaker declared test, a weakened existing browser e2e or API test, or a hard repo-standard violation can block. Smells and suggestions go in the MR description. Verify fixes with the affected tests rather than another review.
+Each fix adds new code to review, and the judgement-call half of the Standards axis gives different results from run to run. One reader described the loop: "/code-review and /improve-code-architecture always find new stuff every time. I implement fixes, rerun these skills, and again and again." Review runs once per change. Findings are marked blocking or non-blocking: a missing or wrong spec requirement with a quoted line, a missing or weaker declared test, a test that doesn't assert the story's observable behaviour, a weakened existing test at a declared boundary, or a hard repo-standard violation can block. Smells and suggestions go in the MR description. Verify fixes with the affected tests rather than another review.
 
 **Does it review my uncommitted work?**
 

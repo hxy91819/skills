@@ -1,13 +1,13 @@
 ---
 name: code-review
-description: "Review the changes since a fixed point (commit, branch, tag, or merge-base) along three axes: Standards (does the code follow this repo's documented coding standards?), Spec (does the code match what the originating issue/spec asked for?) and Tests (does every row of the spec's regression contract have a test at its declared boundary, and were existing tests changed?). Runs all three reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to \"review since X\"."
+description: "Review the changes since a fixed point (commit, branch, tag, or merge-base) along three axes: Standards (does the code follow this repo's documented coding standards?), Spec (does the code match what the originating issue/spec asked for?) and Tests (does every row of the spec's regression contract have a test at its declared boundary that asserts observable behaviour, and were existing tests at a declared boundary weakened?). Runs all three reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to \"review since X\"."
 ---
 
 Three-axis review of the diff between `HEAD` and a fixed point the user supplies:
 
 - **Standards**: does the code conform to this repo's documented coding standards?
 - **Spec**: does the code faithfully implement the originating issue / spec?
-- **Tests**: does every row of the spec's regression contract (its Testing Decisions table) have a test at the declared boundary, and were existing browser e2e or API tests changed?
+- **Tests**: does every row of the spec's regression contract (its Testing Decisions table) have a test at the declared boundary that asserts the story's observable behaviour, and were existing tests at a declared boundary weakened?
 
 Each available axis runs in its own parallel BB review thread so the axes don't pollute each other's context, then this skill aggregates their findings. The process below belongs to the coordinating agent only: load `$bb-model-routing` by skill name to dispatch and collect these threads. An agent assigned an axis completes that review directly and returns its report; it does not run this process or dispatch another agent.
 
@@ -32,7 +32,7 @@ Look for the originating spec, in this order:
 3. A spec file under `docs/`, `specs/`, or `.scratch/` matching the branch name or feature.
 4. If nothing is found, ask the user where the spec is. If they say there isn't one, the **Spec** sub-agent will skip and report "no spec available".
 
-Also pull out the spec's Testing Decisions table, or the tickets' test criteria; the **Tests** axis reads it. If neither exists, the Tests sub-agent derives the rows itself and says so.
+Also pull out the spec's Testing Decisions table, or the tickets' test criteria; the **Tests** axis reads it. If neither exists, the Tests sub-agent derives the rows itself by the same risk rule and says so.
 
 ### 3. Identify the standards sources
 
@@ -83,8 +83,8 @@ If the spec is missing, skip the Spec sub-agent and note this in the final repor
 **Tests sub-agent prompt** should include:
 
 - The diff command and commit list.
-- The spec's Testing Decisions table, or the tickets' test criteria. If neither exists, say so and derive one row per story from the spec by this rule: browser e2e for a story that changes what a user sees or does, api for one that changes a request, response, or persisted side effect.
-- The brief: "Per row, report (a) rows with no test in the diff; (b) rows whose test sits below the declared boundary (declared browser e2e, delivered unit, controller or service test); (c) rows whose test exists but doesn't assert the story's observable behaviour. Then (d) every existing browser e2e or API test the diff modified or deleted: quote the hunk and classify it. Either the spec asks for the old behaviour to change (cite the spec line), or the old test was wrong (say what the spec says the behaviour is), or the assertion was weakened or removed with no spec line asking for it, which means the test was right and the code regressed. The commit message's stated reason is input, not verdict. Do not report on unit test coverage. Under 400 words."
+- The spec's Testing Decisions table, or the tickets' test criteria. If neither exists, say so and derive one row per story from the spec by the same risk rule: for each story, ask who notices first when it regresses, what is lost, and which layer catches it earliest and most stably, then name the boundary at that layer (`browser e2e`, `api`, an existing lower boundary, or `none` with a reason).
+- The brief: "Per row, report (a) rows with no test in the diff, skipping rows whose boundary is `none` with a reason; (b) rows whose test sits below the declared boundary (for example a declared `browser e2e` delivered as a unit, controller or service test); (c) rows whose test exists but doesn't assert the story's observable behaviour. Then (d) every existing test at a declared boundary the diff modified or deleted: quote the hunk and classify it. Either the spec asks for the old behaviour to change (cite the spec line), or the old test was wrong (say what the spec says the behaviour is), or the assertion was weakened or removed with no spec line asking for it, which means the test was right and the code regressed. The commit message's stated reason is input, not verdict. Do not report on unit test coverage. Under 400 words."
 
 ### 5. Aggregate
 
@@ -92,7 +92,7 @@ Present the three reports under `## Standards`, `## Spec` and `## Tests` heading
 
 End with a one-line summary: total findings per axis, and the worst issue _within each axis_ (if any). Don't pick a single winner across axes: that's the reranking the separation exists to prevent.
 
-Mark each finding **blocking** or **non-blocking**. Blocking means: a spec requirement missing or wrong with its spec line quoted, a declared test missing or below its boundary, an existing browser e2e or API test weakened, or a hard violation of a documented repo standard. Smells, suggestions and anything without a quoted source are non-blocking: record them for the MR description, don't fix them in this change.
+Mark each finding **blocking** or **non-blocking**. Blocking means: a spec requirement missing or wrong with its spec line quoted; a declared test missing, below its boundary, or not asserting the story's observable behaviour; an existing test at a declared boundary weakened; or a hard violation of a documented repo standard. Smells, suggestions and anything without a quoted source are non-blocking: record them for the MR description, don't fix them in this change.
 
 ## Why three axes
 

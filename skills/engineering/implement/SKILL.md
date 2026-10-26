@@ -12,9 +12,9 @@ Read `docs/agents/issue-tracker.md` for the configured tracker contract before a
 
 Call the Skill tool with "tdd" where possible, at pre-agreed test boundaries.
 
-The spec's Testing Decisions table (or the ticket's test criteria) is the completion list: a story is done when the test at its declared boundary exists and passes. Never substitute a lower boundary for a `browser e2e` or `api` row. Unit tests are yours to add or skip.
+The spec's Testing Decisions table (or the ticket's test criteria) is the completion list: a story is done when the test at its declared boundary exists and passes. Never substitute a lower boundary for the declared one; that row chose the boundary to catch a specific regression. A `none` row carries its reason instead of a test obligation. Unit tests are yours to add or skip.
 
-When an existing browser e2e or API test fails because of your change, decide whether the test or the code is wrong, then say which you changed and why in the commit message. That line is how the reviewer and the next agent tell a fixed regression from a silenced one.
+When an existing test at a declared boundary fails because of your change, decide whether the test or the code is wrong, then say which you changed and why in the commit message. That line is how the reviewer and the next agent tell a fixed regression from a silenced one.
 
 Run typechecking regularly, single test files regularly, and the full test suite once at the end.
 
@@ -34,7 +34,7 @@ Pick the tier from the change's risk. File count, test count and ticket length d
 
 Review once. After fixing findings, rerun the affected tests and don't review again.
 
-Fix only blocking findings in this change: a spec requirement missing or wrong, with the spec line quoted; a declared test missing or below its boundary; an existing browser e2e or API test weakened; a hard violation of a documented repo standard. List everything else (smells, suggestions, anything without a spec line) in the commit or MR description instead of fixing it.
+Fix only blocking findings in this change: a spec requirement missing or wrong, with the spec line quoted; a declared test missing or below its boundary; an existing test at a declared boundary weakened; a hard violation of a documented repo standard. List everything else (smells, suggestions, anything without a spec line) in the commit or MR description instead of fixing it.
 
 Review doesn't hold up delivery. Push and open the MR as you normally would and let review run alongside CI. If a review axis can't run for provider reasons, say so and deliver without it.
 

@@ -33,9 +33,9 @@ So the spec does not validate or decide anything. It records what you decided, i
 
 ## Test boundaries before prose
 
-Before it writes anything, `to-spec` sketches the **test boundaries** where the feature will be tested, and checks them with you. It prefers existing test boundaries to new ones, and picks the highest test boundary it can. The ideal number of test boundaries for a change is one.
+Before it writes anything, `to-spec` sketches the **test boundaries** where the feature will be tested, and checks them with you. It prefers existing test boundaries to new ones, and picks the highest boundary the risk justifies rather than the highest one available. The ideal number of test boundaries for a change is one.
 
-The Testing Decisions table records one row per story. A change to what a user sees or does needs a browser e2e test; a request, response or persisted side effect needs an API test. Lower boundaries never substitute for either, and unit tests are the implementer's choice. Keep e2e lean: one main-path scenario and one denial scenario per story, with combinations tested at the API boundary.
+The Testing Decisions table records one row per story with its boundary, the risk it guards and what proves it. The boundary is chosen by regression risk: who notices first when the story regresses, what is lost, and which layer catches it earliest and most stably. A persisted side effect or external contract usually takes an API test. A UI flow reserves browser e2e for one main path and one denial path, and the rest can sit at a lower boundary or `none`. Pure internal logic takes the repo's existing lower boundary (unit, service or integration), named as the repo names it. `none` needs a reason. Name a lower boundary when that layer is what catches the risk.
 
 Other skills use those agreed test boundaries later. [tdd](https://aihero.dev/skills-tdd) works only at test boundaries you agreed in advance. [code-review](https://aihero.dev/skills-code-review) reviews the diff against the spec, so a test boundary nobody agreed to shows up as a review finding. Both connections go through this document. That is why you should take the test boundary conversation seriously here, and not leave it for implementation.
 

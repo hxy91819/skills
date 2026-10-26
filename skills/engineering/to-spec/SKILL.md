@@ -16,11 +16,11 @@ Read `docs/agents/issue-tracker.md` for the configured tracker contract before a
 
 1. Explore the repo to understand the current state of the codebase, if you haven't already. Use the project's domain glossary vocabulary throughout the spec, and respect any ADRs in the area you're touching.
 
-2. Sketch out the test boundaries at which you're going to test the feature. Existing test boundaries should be preferred to new ones. Use the highest test boundary possible. If new test boundaries are needed, propose them at the highest point you can. The fewer test boundaries across the codebase, the better - the ideal number is one.
+2. Sketch out the test boundaries at which you're going to test the feature. Existing test boundaries should be preferred to new ones, and the fewer across the codebase the better - the ideal number is one. For each story, choose the boundary by its regression risk, below. If a new test boundary is needed, propose one at the layer that catches the risk.
 
-Two boundaries are fixed, because they are what catches a regression after the feature ships: a story that changes what a user sees or does gets a **browser end-to-end** test; a story that changes a request, response, or persisted side effect gets an **API** test. A lower boundary (unit, controller, service) never stands in for either. Unit tests are the implementer's call and are not planned here. Keep the end-to-end set lean: one scenario per story for the main path and one for denial; combinatorics belong at the API boundary.
+Choose each story's boundary by its regression risk: ask who notices first when the story regresses, what is lost, and which layer catches it earliest and most stably. Take the highest boundary that catches that risk, but not higher than the risk needs. A story that changes a persisted side effect or an external contract usually takes an **API** test. Within a UI flow, only a few critical paths earn a **browser end-to-end** test: one main path and one denial path; the rest of the UI change can sit at a lower boundary or `none`. A story of pure internal logic takes whatever lower boundary the repo already tests at (unit, service or integration), named as the repo names it. Use `none` only with a stated reason. Unit tests stay the implementer's call unless the row declares a `unit` boundary.
 
-Check with the user that these test boundaries match their expectations.
+Check with the user that these test boundaries and the risk each one catches match their expectations.
 
 3. Write the spec using the template below, then publish it using only the commands and conventions in `docs/agents/issue-tracker.md`. Apply the `ready-for-agent` triage label through that same contract - no need for additional triage.
 
@@ -70,15 +70,16 @@ A list of testing decisions that were made. Include:
 
 - A description of what makes a good test (only test external behavior, not implementation details)
 - Prior art for the tests (i.e. similar types of tests in the codebase)
-- The regression contract: one row per user story. `/to-tickets`, `/implement` and `/code-review` read this table, so a story missing from it carries no test obligation.
+- The regression contract: one row per user story, including the boundary, the risk it guards and what proves it. `/to-tickets`, `/implement` and `/code-review` read this table, so a story missing from it carries no test obligation.
 
-| Story | Boundary | Proven by |
-| --- | --- | --- |
-| 1 | browser e2e | the suite or scenario, by name, not path |
-| 2 | api | ... |
-| 3 | none: reason | |
+| Story | Boundary | Risk | Proven by |
+| --- | --- | --- | --- |
+| 1 | browser e2e | checkout breaks on the main path | the suite or scenario, by name, not path |
+| 2 | api | a rejected request leaves a partial record | ... |
+| 3 | unit | fee rounding drifts | ... |
+| 4 | none: reason | ... | |
 
-`browser e2e` for a story that changes what a user sees or does; `api` for a story that changes a request, response, or persisted side effect; `none` only with a reason. A lower boundary never substitutes.
+`Boundary` is chosen by the story's regression risk: ask who notices first when it regresses, what is lost, and which layer catches it earliest and most stably, then take the highest boundary that catches the risk without going higher than it needs. Use `browser e2e`, `api`, a lower boundary the repo already tests at (unit, service or integration, named as the repo names it), or `none` with a reason. `Risk` is one sentence naming the regression the row exists to catch. Name a lower boundary when that layer is what catches the risk.
 
 ## Out of Scope
 

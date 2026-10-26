@@ -50,7 +50,7 @@ One run covers one ticket. The tickets [to-tickets](https://aihero.dev/skills-to
 | Self | Ordinary feature work inside one module | Reread the diff against the spec and completion list |
 | Full | Cross-module work, schema or migration, permissions or credentials, a core state machine | Call [code-review](https://aihero.dev/skills-code-review) against the branch point |
 
-File count does not raise the tier; when torn, take the lower. Review runs once. Missing or wrong spec requirements, missing or weaker declared tests, weakened existing browser e2e or API tests, and hard repo-standard violations block. Smells and suggestions go in the commit or MR description. Review can run alongside CI and delivery; a provider failure is reported rather than starting an endless review loop.
+File count does not raise the tier; when torn, take the lower. Review runs once. Missing or wrong spec requirements, missing or weaker declared tests, weakened existing tests at a declared boundary, and hard repo-standard violations block. Smells and suggestions go in the commit or MR description. Review can run alongside CI and delivery; a provider failure is reported rather than starting an endless review loop.
 
 ## Pre-agreed test boundaries
 
@@ -58,7 +58,7 @@ The skill's central idea is the **test boundary**, the public boundary you obser
 
 The "pre-agreed" part matters, and it is also the skill's weakest point. Nothing inside `implement` agrees the test boundaries. `tdd` is the skill that asks, and it refuses to write a test at an unconfirmed test boundary. So in practice the agreement happens either upstream in the spec, or in the first exchange of the run. If it happens nowhere, the run becomes "just write the code" and nothing warns you. Naming the test boundaries in the spec is what stops that.
 
-The spec's Testing Decisions table (or the ticket's test criteria) is the completion list. Every declared test must exist and pass at its boundary; a unit test cannot replace a `browser e2e` or `api` row. When an existing browser e2e or API test fails because of the change, the commit message states whether the test or code changed and why. The full suite and CI must pass where the repo has them. Extra validation outside the spec is reported as out of scope.
+The spec's Testing Decisions table (or the ticket's test criteria) is the completion list. Every declared test must exist and pass at its boundary; a test below the declared boundary cannot replace it. When an existing test at a declared boundary fails because of the change, the commit message states whether the test or code changed and why. The full suite and CI must pass where the repo has them. Extra validation outside the spec is reported as out of scope.
 
 ## Common questions
 
