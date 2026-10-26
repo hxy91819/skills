@@ -21,7 +21,7 @@ You must supply the fixed point. If you do not, the skill asks for one rather th
 
 ## Prerequisites
 
-BB and the `bb-model-routing` skill must be available. Each axis uses `--difficulty simple`. Reports arrive through the routing skill's notifications; a provider failure is retried once through its fallback, then marked "not run" while the other reports are aggregated.
+BB with the `bb-model-routing` skill is the preferred runner; without it, the coordinator runs each axis through the host's sub-agent tool, or one at a time in fresh contexts. Each BB axis uses `--difficulty simple`. Reports arrive through the routing skill's notifications; a provider failure is retried once through its fallback, then marked "not run" while the other reports are aggregated.
 
 The Standards axis needs nothing. It reads whatever the repo documents (`CODING_STANDARDS.md`, `CONTRIBUTING.md`, and the like) and falls back on a built-in baseline when the repo documents nothing.
 
