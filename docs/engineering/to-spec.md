@@ -2,6 +2,8 @@
 
 `to-spec` turns the conversation you have just had into a **[spec](https://www.aihero.dev/ai-coding-dictionary/spec)**, and publishes it to your issue tracker as a single issue.
 
+Publishing and labelling use only the commands and conventions in `docs/agents/issue-tracker.md`, including when the configured tracker is Gongfeng with its own CLI.
+
 It does not interview you. When you reach for it, the deciding is already done. So it synthesises what is known (from the thread, the codebase, your `GLOSSARY.md` and ADRs) and does not start a new round of questions. The spec records decisions you already made. It is not a place to make new ones.
 
 It keeps the bar where you set it. Stories cover the core paths you described, enough for an observable first version. Extra verification requirements only go in when you asked for them, with your words quoted beside each one.

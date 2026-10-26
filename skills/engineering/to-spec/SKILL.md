@@ -10,6 +10,8 @@ This skill takes the current conversation context and codebase understanding and
 
 The issue tracker and triage label vocabulary should have been provided to you. If not, tell the user to run `/setup-matt-pocock-skills`.
 
+Read `docs/agents/issue-tracker.md` for the configured tracker contract before any tracker operation.
+
 ## Process
 
 1. Explore the repo to understand the current state of the codebase, if you haven't already. Use the project's domain glossary vocabulary throughout the spec, and respect any ADRs in the area you're touching.
@@ -20,7 +22,7 @@ Two boundaries are fixed, because they are what catches a regression after the f
 
 Check with the user that these test boundaries match their expectations.
 
-3. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
+3. Write the spec using the template below, then publish it using only the commands and conventions in `docs/agents/issue-tracker.md`. Apply the `ready-for-agent` triage label through that same contract - no need for additional triage.
 
 Keep the bar where the user set it. Audit trails, evidence chains, reconciliation, replay protection, extra approval steps and similar verification requirements go into the spec only when the user asked for them; when you include one, quote the user's words beside it. Every story, decision and test row downstream is built and checked to what the spec says, so a requirement added here costs the whole chain.
 

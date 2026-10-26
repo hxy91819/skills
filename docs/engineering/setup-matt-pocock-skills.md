@@ -41,10 +41,15 @@ The tracker options:
 | --- | --- | --- |
 | **GitHub** | the repo's GitHub Issues | the `gh` CLI |
 | **GitLab** | the repo's GitLab Issues | the `glab` CLI |
+| **GitLab-style self-hosted platform (such as Gongfeng)** | the platform's issues | its own CLI; the Gongfeng template uses `gongfengcli` and a numeric project ID |
 | **Local markdown** | files under `.scratch/<feature>/` in this repo | nothing, not even a remote |
 | **Other** | wherever you say | one paragraph from you describing the workflow |
 
-The first three ship as templates in the skill and work out of the box. Local markdown is a full option, not a fallback. The skill supports a solo project with no remote. One caveat: don't use local markdown if you use GitHub. They are alternatives, so pick one.
+GitHub, GitLab, Gongfeng and local markdown ship as templates. For a GitLab-style platform that uses its own CLI, or where `glab` is unavailable, choose the self-hosted option and record that CLI's commands. The Gongfeng template needs the project's numeric ID in place of `<project-id>`; another platform needs its documented commands substituted.
+
+The tracker document records parent-child, blocking, and claim conventions as well as commands. Gongfeng uses `Part of #<parent>` on the first description line and a `Blocked by: #<n>, #<n>` line, with assignment before work starts; it assumes no native blocking or sub-issue capability.
+
+Local markdown is a full option, not a fallback. The skill supports a solo project with no remote. One caveat: don't use local markdown if you use GitHub. They are alternatives, so pick one.
 
 "Other" is a full option too. It is how Jira, Linear, Azure DevOps and Beads all work. You describe the workflow, the skill records your prose in `docs/agents/issue-tracker.md`, and the downstream skills follow the prose. Users have already built this: a Jira-over-[MCP](https://www.aihero.dev/ai-coding-dictionary/mcp) variant, a Gitea CLI shaped like `gh`, a hand-built local dashboard.
 
@@ -52,7 +57,7 @@ The first three ship as templates in the skill and work out of the box. Local ma
 
 **Do I have to use GitHub?**
 
-No. GitHub, GitLab and local markdown under `.scratch/` all ship as ready-made templates, and anything else works through the "other" path. This is the most-repeated question, in roughly these words: *"hard locked to github"*, *"can I use GitLab / Jira"*, *"what about Azure DevOps"*. The answer is always the same: setup chooses the tracker, not the skill.
+No. GitHub, GitLab, Gongfeng and local markdown under `.scratch/` all ship as templates, and anything else works through the "other" path. This is the most-repeated question, in roughly these words: *"hard locked to github"*, *"can I use GitLab / Jira"*, *"what about Azure DevOps"*. The answer is always the same: setup chooses the tracker, not the skill.
 
 **Do I need to re-run it after updating the skills?**
 
@@ -64,7 +69,7 @@ This is a known gap, and still open. The file-selection rule is "edit `CLAUDE.md
 
 **It didn't create my triage labels.**
 
-When triage setup runs on GitHub or GitLab, it now creates missing configured labels through the tracker workflow as well as writing the mapping. Re-run setup to repair a repo configured before this step existed. Wayfinder labels are separate from the triage vocabulary and are not created by that step.
+When triage setup runs on GitHub, GitLab, or Gongfeng, it now creates missing configured labels through the tracker workflow as well as writing the mapping. Re-run setup to repair a repo configured before this step existed. Wayfinder labels are separate from the triage vocabulary and are not created by that step.
 
 **Can I configure the other skills' behaviour here ([grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) cadence, question format, tone)?**
 

@@ -32,12 +32,12 @@ If the tickets came from [to-tickets](https://aihero.dev/skills-to-tickets), [se
 
 A run has seven steps, in order:
 
-1. Fetch a passed ticket reference from the tracker and state its title, then read the work and its test boundaries. Ask if the reference is ambiguous.
+1. Fetch a passed ticket reference with the commands in `docs/agents/issue-tracker.md` and state its title, then read the work and its test boundaries. Ask if the reference is ambiguous. If that contract requires claiming, claim the ticket as documented before starting work.
 2. Drive [tdd](https://aihero.dev/skills-tdd) at the pre-agreed test boundaries, one red-green slice at a time.
 3. Typecheck often, run single test files as it goes.
 4. Run the full test suite once, at the end.
 5. Commit to the current branch, then review once at the tier the change calls for. Fix blocking findings and rerun the affected tests.
-6. Deliver using the repo's own tools and `AGENTS.md` rules. Once the change has landed, leave a one-line result on the ticket and close it.
+6. Deliver using the repo's own tools and `AGENTS.md` rules, with tracker and MR commands from `docs/agents/issue-tracker.md`. Once the change has landed, use that contract to leave a one-line result on the ticket and close it.
 7. Report the outcome, what you need to decide, and the next step, followed by short details.
 
 One run covers one ticket. The tickets [to-tickets](https://aihero.dev/skills-to-tickets) produces are tracer-bullet vertical slices sized to fit a single fresh [context window](https://www.aihero.dev/ai-coding-dictionary/context-window), so the intended rhythm is: clear context, implement one ticket, commit, clear again. Each ticket is self-contained, so you can discard the previous ticket's context.
