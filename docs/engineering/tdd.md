@@ -60,7 +60,7 @@ It happens. One user pushed the [model](https://www.aihero.dev/ai-coding-diction
 
 **Should it write browser or end-to-end tests first?**
 
-Use the agreed test boundary. Browser tests can be slow, so keep their scenarios lean. When a story's regression contract declares `browser e2e` or `api`, a lower boundary cannot replace it. Unit tests remain the implementer's choice; the declared story test must still exist and pass before the story is done.
+Use the agreed test boundary. Browser tests can be slow, so keep their scenarios lean. A story's regression contract row names the boundary that catches its risk (`browser e2e`, `api`, an existing lower boundary, or `none` with a reason); a lower boundary cannot replace the declared one. Unit tests beyond the declared rows remain the implementer's choice; the declared story test must still exist and pass before the story is done.
 
 **Does `/tdd` replace `/implement`, or the course's `/do-work`?**
 
