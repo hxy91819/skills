@@ -8,7 +8,7 @@ triggers:
 
 Implement the work described by the user in the spec or tickets.
 
-If the user passes a ticket reference, fetch it from the issue tracker and state its title before starting. If the reference is ambiguous, ask.
+Read `docs/agents/issue-tracker.md` for the configured tracker contract before any tracker operation. If the user passes a ticket reference, fetch it using that document's commands and state its title before starting. If the reference is ambiguous, ask. When the tracker document requires claiming a ticket, claim it as documented before starting work.
 
 Call the Skill tool with "tdd" where possible, at pre-agreed test boundaries.
 
@@ -42,9 +42,11 @@ Review doesn't hold up delivery. Push and open the MR as you normally would and 
 
 Deliver the way the repo's `AGENTS.md` says (a merge request, a direct push, or whatever it documents), using the tools and skills the repo provides for its code host. When a tool, credential or entry point you need is missing, report the work as blocked and name exactly what is missing; don't improvise a different route.
 
+Use `docs/agents/issue-tracker.md` for tracker and merge-request commands during delivery, including ticket comments and closing.
+
 When the spec relies on a capability that doesn't exist yet, report that as blocked too. Don't design a new subsystem to stand in for it; that is a new decision for the user, not part of this ticket.
 
-Once the change has landed (merged, or pushed where the repo pushes directly), leave a one-line result on the ticket and close it, so tickets blocked by it become visibly ready.
+Once the change has landed (merged, or pushed where the repo pushes directly), use the tracker document's commands to leave a one-line result on the ticket and close it, so tickets blocked by it become visibly ready.
 
 ## Report
 
