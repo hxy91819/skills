@@ -42,13 +42,23 @@ A run is seven beats, in order:
 
 One run covers one ticket. The tickets [to-tickets](https://aihero.dev/skills-to-tickets) produces are tracer-bullet vertical slices sized to fit a single fresh [context window](https://www.aihero.dev/ai-coding-dictionary/context-window), so the intended rhythm is: clear context, implement one ticket, commit, clear again. Each ticket is self-contained, so you can discard the previous ticket's context.
 
+## Review matched to risk
+
+| Tier | Change | Review |
+| --- | --- | --- |
+| Skip | Docs, config, tests, CI or flaky-test fixes; a small single-module fix without schema, migration, permission or credential changes | Tests and CI |
+| Self | Ordinary feature work inside one module | Reread the diff against the spec and completion list |
+| Full | Cross-module work, schema or migration, permissions or credentials, a core state machine | Call [code-review](https://aihero.dev/skills-code-review) against the branch point |
+
+File count does not raise the tier; when torn, take the lower. Review runs once. Missing or wrong spec requirements, missing or weaker declared tests, weakened existing tests at a declared boundary, and hard repo-standard violations block. Smells and suggestions go in the commit or MR description. Review can run alongside CI and delivery; a provider failure is reported rather than starting an endless review loop.
+
 ## Pre-agreed test boundaries
 
 The skill's central idea is the **test boundary**, the public boundary you observe behaviour at without reaching inside. Tests live at test boundaries. When the test boundary is agreed before any code exists, the tests last, and you can rewrite the implementation underneath without changing them.
 
 The "pre-agreed" part matters, and it is also the skill's weakest point. Nothing inside `implement` agrees the test boundaries. `tdd` is the skill that asks, and it refuses to write a test at an unconfirmed test boundary. So in practice the agreement happens either upstream in the spec, or in the first exchange of the run. If it happens nowhere, the run becomes "just write the code" and nothing warns you. Naming the test boundaries in the spec is what stops that.
 
-The spec's Testing Decisions table is also the run's completion list. A story whose row says `browser e2e` or `api` is not done until a test at that boundary exists and passes, and the skill is told not to substitute a lower one. When an existing browser e2e or API test breaks under the change, the skill decides whether the test or the code is wrong and records which it changed, and why, in the commit message. That one line is what lets a reviewer or the next agent tell a fixed regression from a silenced one without anyone having to gate the decision.
+The spec's Testing Decisions table (or the ticket's test criteria) is the completion list. Every declared test must exist and pass at its boundary; a test below the declared boundary cannot replace it. When an existing test at a declared boundary fails because of the change, the commit message states whether the test or code changed and why. The full suite and CI must pass where the repo has them. Extra validation outside the spec is reported as out of scope.
 
 ## Common questions
 
