@@ -1,5 +1,25 @@
 # mattpocock-skills
 
+## 1.3.3
+
+### Patch Changes
+
+- [#1363](https://github.com/mattpocock/skills/pull/1363) [`5ae4816`](https://github.com/mattpocock/skills/commit/5ae481693d13b37d4d2c2c92d0b66d299c93e695) Thanks [@mattpocock](https://github.com/mattpocock)! - `chief-of-staff` now looks for a shared wiki before starting its own. It also runs `retro` on about one in five of its subagents' sessions, the ones where something went wrong first, and acts on the findings itself, and runs `to-spec`, `to-tickets` and `implement-spec` for large chunks of work, reading each skill by relative path so they can stay user-invoked.
+
+- [`4399fa5`](https://github.com/mattpocock/skills/commit/4399fa5dd78da6fccddea30260d6d93e0e78f49f) Thanks [@hxy91819](https://github.com/hxy91819)! - `code-review` runs its axes through the host's sub-agent tool, or sequentially in fresh contexts, when BB and `bb-model-routing` are not available; the per-axis boundary (review directly, never dispatch) is unchanged.
+
+- [#1342](https://github.com/mattpocock/skills/pull/1342) [`a496f55`](https://github.com/mattpocock/skills/commit/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa) Thanks [@mattpocock](https://github.com/mattpocock)! - `implement-spec` now uses a fresh implementer subagent for each ticket and for the code-review fixes, instead of reusing an earlier implementer.
+
+- [`76d58a5`](https://github.com/mattpocock/skills/commit/76d58a561b14d110bcc3b12c5bf35e703c92f9fc) Thanks [@hxy91819](https://github.com/hxy91819)! - Keep specs lean and make `implement` finish the job. `to-spec` now writes user stories for the core paths only and adds verification requirements (audit trails, reconciliation, replay protection, extra approvals) only when the user asked for them, quoting the user's words. `implement` delivers through the route the repo's `AGENTS.md` documents, reports a missing tool or capability as blocked instead of improvising a route or a stand-in subsystem, closes the ticket once the change has landed, and opens its final report with the outcome, the decision needed and the next step.
+
+- [`10a6f8c`](https://github.com/mattpocock/skills/commit/10a6f8c54f2ae23f069eecd271124e41e5849c69) Thanks [@hxy91819](https://github.com/hxy91819)! - Replace the word "seam" across the skills and docs with two plainer terms: **test boundary** for the public boundary tests attach to (`tdd`, `to-spec`, `implement`, `diagnosing-bugs`), and **swap point** for the place where an implementation can be swapped behind an interface (`codebase-design` and the skills that borrow its vocabulary). Both carry a Chinese gloss (测试边界, 替换点) so Chinese output no longer falls back to a literal translation.
+
+- [`3f562a3`](https://github.com/mattpocock/skills/commit/3f562a3e5c7f91953e715d5b2038d1eb9272f97d) Thanks [@hxy91819](https://github.com/hxy91819)! - Choose each story's test boundary by its regression risk instead of fixing two. The Testing Decisions table gains a `Risk` column and each row names the boundary that catches that risk: `browser e2e`, `api`, an existing lower boundary, or `none` with a reason. `to-tickets`, `implement` and `code-review` read the declared boundary from the row, and derive rows by the same risk rule when no spec table exists.
+
+- [#1453](https://github.com/mattpocock/skills/pull/1453) [`9201b96`](https://github.com/mattpocock/skills/commit/9201b96da4af2d663faa13bef984095bb69059b1) Thanks [@mattpocock](https://github.com/mattpocock)! - `software-factory` now installs with `npx skills add`: its description is quoted, so strict YAML parsers no longer read the colon in it as a nested mapping and skip the skill.
+
+- [#1316](https://github.com/mattpocock/skills/pull/1316) [`4ae2317`](https://github.com/mattpocock/skills/commit/4ae2317ddb22b046e26455e4f9c9b3aaaf62212d) Thanks [@mattpocock](https://github.com/mattpocock)! - Add `software-factory`, an in-progress user-invoked reference skill: a glossary for designing a software factory (tasks, runs, runners, triggers, and the services they plug into), example tasks grouped by the problem they solve, surveys of the products that fill each slot (ticket trackers, git hosts, runners, observability platforms), and the questions that finish a design. Call it alongside a grilling session.
+
 ## 1.3.2
 
 ### Patch Changes
