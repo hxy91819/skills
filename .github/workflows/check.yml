@@ -26,3 +26,19 @@ jobs:
 
       - name: Check frontmatter
         run: npm run check-frontmatter
+
+  conflict-markers:
+    name: No conflict markers
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for conflict markers
+        run: |
+          if grep -rnE '^(<{7}|>{7})( |$)|^\|{7}( |$)|^={7}[[:space:]]*$' --exclude-dir=.git .; then
+            echo "::error::Unresolved conflict markers found"
+            exit 1
+          fi
